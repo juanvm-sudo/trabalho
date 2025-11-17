@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Computador</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        main {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+            overflow: hidden;
+        }
+
+        /* Esconde todos os passos por padrão */
+        .passo {
+            display: none;
+            padding: 25px;
+            text-align: center;
+        }
+
+        /* Mostra apenas o passo ativo */
+        .passo.ativo {
+            display: block;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        button.btn-proximo {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button.btn-proximo:hover {
+            background-color: #0056b3;
+        }
+
+        /* Estilos para botões de erro/sucesso */
+        button.fim-erro {
+            background-color: #dc3545;
+        }
+        button.fim-erro:hover {
+            background-color: #c82333;
+        }
+
+        button.fim-sucesso {
+            background-color: #28a745;
+        }
+        button.fim-sucesso:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <main>
+
+        <div class="passo ativo" id="passo-0">
+            
+            <p><strong>Bem-vindo ao Quiz de Computação!</strong><br>Você é um explorador digital prestes a navegar pelo mundo do hardware e software. Responda corretamente para chegar ao tesouro do conhecimento! Pronto?</p>
+            <button class="btn-proximo" data-proximo="1">Começar o Quiz!</button>
+        </div>
+
+        <div class="passo" id="passo-1">
+            
+            <p><strong>Pergunta 1:</strong> Qual componente é conhecido como o "cérebro" do computador, responsável por processar a maioria das instruções?</p>
+            <button class="btn-proximo" data-proximo="fim-erro">Memória RAM</button>
+            <button class="btn-proximo" data-proximo="2">CPU (Unidade Central de Processamento)</button>
+            <button class="btn-proximo" data-proximo="fim-erro">Placa-mãe</button>
+        </div>
+
+        <div class="passo" id="passo-2">
+            
+
+[Image of computer hardware components]
+
+            <p><strong>Pergunta 2:</strong> Como são chamadas as partes *físicas* de um computador, como o teclado, mouse e monitor?</p>
+            <button class="btn-proximo" data-proximo="3">Hardware</button>
+            <button class="btn-proximo" data-proximo="fim-erro">Software</button>
+            <button class="btn-proximo" data-proximo="fim-erro">Firmware</button>
+        </div>
+
+        <div class="passo" id="passo-3">
+            
+
+[Image of software application icons]
+
+            <p><strong>Pergunta 3:</strong> E como são chamados os programas, aplicativos e o sistema operacional (a parte *lógica*)?</p>
+            <button class="btn-proximo" data-proximo="fim-erro">Hardware</button>
+            <button class="btn-proximo" data-proximo="fim-erro">Hard Drive</button>
+            <button class="btn-proximo" data-proximo="4">Software</button>
+        </div>
+
+        <div class="passo" id="passo-4">
+            
+            <p><strong>Pergunta 4:</strong> Qual tipo de memória é *volátil*, ou seja, perde seus
