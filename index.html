@@ -127,4 +127,60 @@
 
         <div class="passo" id="passo-4">
             
-            <p><strong>Pergunta 4:</strong> Qual tipo de memória é *volátil*, ou seja, perde seus
+            <p><strong>Pergunta 4:</strong> Qual tipo de memória é *volátil*, ou seja, perde seus dados quando o computador é desligado?</p>
+            <button class="btn-proximo" data-proximo="fim-sucesso">Memória RAM</button>
+            <button class="btn-proximo" data-proximo="fim-erro">SSD (Unidade de Estado Sólido)</button>
+            <button class="btn-proximo" data-proximo="fim-erro">HD (Disco Rígido)</button>
+        </div>
+
+        <div class="passo" id="fim-erro">
+            
+            <p><strong>Ops! Resposta incorreta.</strong><br>Parece que você encontrou um bug! Mas não desanime, o mundo da tecnologia é feito de tentativas. Tente novamente!</p>
+            <button class="btn-proximo fim-erro" data-proximo="0">Tentar Novamente</button>
+        </div>
+
+        <div class="passo" id="fim-sucesso">
+            
+            <p><strong>Parabéns! Você Conseguiu!</strong><br>Você navegou por todos os desafios e provou seu conhecimento. Você é um verdadeiro mestre da computação!</p>
+            <button class="btn-proximo fim-sucesso" data-proximo="0">Jogar de Novo</button>
+        </div>
+
+    </main>
+
+    <script>
+        // Espera o documento carregar completamente
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Seleciona todos os botões que têm a classe 'btn-proximo'
+            const buttons = document.querySelectorAll('.btn-proximo');
+
+            // Adiciona um "ouvinte" de clique para cada botão
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // 1. Encontra o 'div.passo' pai do botão que foi clicado
+                    const passoAtual = btn.closest('.passo');
+                    
+                    // 2. Remove a classe 'ativo', escondendo o passo atual
+                    passoAtual.classList.remove('ativo');
+
+                    // 3. Pega o número do próximo passo guardado no atributo 'data-proximo'
+                    const proximoPassoId = btn.dataset.proximo;
+                    
+                    // 4. Monta o ID completo do próximo passo (ex: 'passo-1')
+                    let proximoPasso;
+                    if (proximoPassoId === "0") {
+                        proximoPasso = document.getElementById('passo-0');
+                    } else {
+                        proximoPasso = document.getElementById(`passo-${proximoPassoId}`);
+                    }
+
+                    // 5. Se o próximo passo existir, adiciona a classe 'ativo' para mostrá-lo
+                    if (proximoPasso) {
+                        proximoPasso.classList.add('ativo');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
