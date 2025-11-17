@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz de Computador</title>
+    
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -71,10 +72,10 @@
         }
 
         /* Estilos para botões de erro/sucesso */
-        button.fim-erro {
+        button.game-over-btn { /* ATUALIZADO */
             background-color: #dc3545;
         }
-        button.fim-erro:hover {
+        button.game-over-btn:hover { /* ATUALIZADO */
             background-color: #c82333;
         }
 
@@ -90,93 +91,70 @@
     <main>
 
         <div class="passo ativo" id="passo-0">
-            
-            <p><strong>Bem-vindo ao Quiz de Computação!</strong><br>Você é um explorador digital prestes a navegar pelo mundo do hardware e software. Responda corretamente para chegar ao tesouro do conhecimento! Pronto?</p>
+                        <p><strong>Bem-vindo ao Quiz de Computação!</strong><br>Você é um explorador digital prestes a navegar pelo mundo do hardware e software. Responda corretamente para chegar ao tesouro do conhecimento! Pronto?</p>
             <button class="btn-proximo" data-proximo="1">Começar o Quiz!</button>
         </div>
 
         <div class="passo" id="passo-1">
-            
-            <p><strong>Pergunta 1:</strong> Qual componente é conhecido como o "cérebro" do computador, responsável por processar a maioria das instruções?</p>
-            <button class="btn-proximo" data-proximo="fim-erro">Memória RAM</button>
-            <button class="btn-proximo" data-proximo="2">CPU (Unidade Central de Processamento)</button>
-            <button class="btn-proximo" data-proximo="fim-erro">Placa-mãe</button>
-        </div>
+                        <p><strong>Pergunta 1:</strong> Qual componente é conhecido como o "cérebro" do computador, responsável por processar a maioria das instruções?</p>
+            <button class="btn-proximo" data-proximo="game-over">Memória RAM</button> <button class="btn-proximo" data-proximo="2">CPU (Unidade Central de Processamento)</button>
+            <button class="btn-proximo" data-proximo="game-over">Placa-mãe</button> </div>
 
         <div class="passo" id="passo-2">
-            
-
-[Image of computer hardware components]
-
-            <p><strong>Pergunta 2:</strong> Como são chamadas as partes *físicas* de um computador, como o teclado, mouse e monitor?</p>
+                        <p><strong>Pergunta 2:</strong> Como são chamadas as partes *físicas* de um computador, como o teclado, mouse e monitor?</p>
             <button class="btn-proximo" data-proximo="3">Hardware</button>
-            <button class="btn-proximo" data-proximo="fim-erro">Software</button>
-            <button class="btn-proximo" data-proximo="fim-erro">Firmware</button>
-        </div>
+            <button class="btn-proximo" data-proximo="game-over">Software</button> <button class="btn-proximo" data-proximo="game-over">Firmware</button> </div>
 
         <div class="passo" id="passo-3">
-            
-
-[Image of software application icons]
-
-            <p><strong>Pergunta 3:</strong> E como são chamados os programas, aplicativos e o sistema operacional (a parte *lógica*)?</p>
-            <button class="btn-proximo" data-proximo="fim-erro">Hardware</button>
-            <button class="btn-proximo" data-proximo="fim-erro">Hard Drive</button>
-            <button class="btn-proximo" data-proximo="4">Software</button>
+                        <p><strong>Pergunta 3:</strong> E como são chamados os programas, aplicativos e o sistema operacional (a parte *lógica*)?</p>
+            <button class="btn-proximo" data-proximo="game-over">Hardware</button> <button class="btn-proximo" data-proximo="game-over">Hard Drive</button> <button class="btn-proximo" data-proximo="4">Software</button>
         </div>
 
         <div class="passo" id="passo-4">
-            
-            <p><strong>Pergunta 4:</strong> Qual tipo de memória é *volátil*, ou seja, perde seus dados quando o computador é desligado?</p>
+                        <p><strong>Pergunta 4:</strong> Qual tipo de memória é *volátil*, ou seja, perde seus dados quando o computador é desligado?</p>
             <button class="btn-proximo" data-proximo="fim-sucesso">Memória RAM</button>
-            <button class="btn-proximo" data-proximo="fim-erro">SSD (Unidade de Estado Sólido)</button>
-            <button class="btn-proximo" data-proximo="fim-erro">HD (Disco Rígido)</button>
-        </div>
+            <button class="btn-proximo" data-proximo="game-over">SSD (Unidade de Estado Sólido)</button> <button class="btn-proximo" data-proximo="game-over">HD (Disco Rígido)</button> </div>
 
-        <div class="passo" id="fim-erro">
-            
-            <p><strong>Ops! Resposta incorreta.</strong><br>Parece que você encontrou um bug! Mas não desanime, o mundo da tecnologia é feito de tentativas. Tente novamente!</p>
-            <button class="btn-proximo fim-erro" data-proximo="0">Tentar Novamente</button>
+        <div class="passo" id="game-over">             <p><strong>GAME OVER!</strong><br>Parece que você encontrou um bug! Mas não desanime, o mundo da tecnologia é feito de tentativas. Tente novamente!</p>
+            <button class="btn-proximo game-over-btn" data-proximo="0">Tentar Novamente</button>
         </div>
 
         <div class="passo" id="fim-sucesso">
-            
-            <p><strong>Parabéns! Você Conseguiu!</strong><br>Você navegou por todos os desafios e provou seu conhecimento. Você é um verdadeiro mestre da computação!</p>
+                        <p><strong>Parabéns! Você Conseguiu!</strong><br>Você navegou por todos os desafios e provou seu conhecimento. Você é um verdadeiro mestre da computação!</p>
             <button class="btn-proximo fim-sucesso" data-proximo="0">Jogar de Novo</button>
         </div>
 
     </main>
 
     <script>
-        // Espera o documento carregar completamente
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // Seleciona todos os botões que têm a classe 'btn-proximo'
             const buttons = document.querySelectorAll('.btn-proximo');
 
-            // Adiciona um "ouvinte" de clique para cada botão
             buttons.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    // 1. Encontra o 'div.passo' pai do botão que foi clicado
                     const passoAtual = btn.closest('.passo');
-                    
-                    // 2. Remove a classe 'ativo', escondendo o passo atual
                     passoAtual.classList.remove('ativo');
-
-                    // 3. Pega o número do próximo passo guardado no atributo 'data-proximo'
-                    const proximoPassoId = btn.dataset.proximo;
                     
-                    // 4. Monta o ID completo do próximo passo (ex: 'passo-1')
-                    let proximoPasso;
-                    if (proximoPassoId === "0") {
-                        proximoPasso = document.getElementById('passo-0');
+                    // Pega o ID do próximo passo (ex: "1", "game-over", "0")
+                    const proximoId = btn.dataset.proximo;
+                    
+                    let proximoPassoElement;
+                    
+                    // Lógica corrigida para encontrar o próximo passo
+                    if (proximoId === "0") {
+                        // Caso especial para reiniciar (vai para passo-0)
+                        proximoPassoElement = document.getElementById('passo-0');
+                    } else if (isNaN(proximoId)) {
+                        // Se não for um número (ex: "game-over" ou "fim-sucesso")
+                        proximoPassoElement = document.getElementById(proximoId);
                     } else {
-                        proximoPasso = document.getElementById(`passo-${proximoPassoId}`);
+                        // Se for um número (ex: "1", "2")
+                        proximoPassoElement = document.getElementById('passo-' + proximoId);
                     }
 
-                    // 5. Se o próximo passo existir, adiciona a classe 'ativo' para mostrá-lo
-                    if (proximoPasso) {
-                        proximoPasso.classList.add('ativo');
+                    // Se encontrou o elemento, mostra
+                    if (proximoPassoElement) {
+                        proximoPassoElement.classList.add('ativo');
                     }
                 });
             });
