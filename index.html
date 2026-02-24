@@ -1,164 +1,53 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Computador</title>
-    
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        main {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 90%;
-            overflow: hidden;
-        }
-
-        /* Esconde todos os passos por padrão */
-        .passo {
-            display: none;
-            padding: 25px;
-            text-align: center;
-        }
-
-        /* Mostra apenas o passo ativo */
-        .passo.ativo {
-            display: block;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        button.btn-proximo {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            font-size: 1em;
-            font-weight: 600;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        button.btn-proximo:hover {
-            background-color: #0056b3;
-        }
-
-        /* Estilos para botões de erro/sucesso */
-        button.game-over-btn { /* ATUALIZADO */
-            background-color: #dc3545;
-        }
-        button.game-over-btn:hover { /* ATUALIZADO */
-            background-color: #c82333;
-        }
-
-        button.fim-sucesso {
-            background-color: #28a745;
-        }
-        button.fim-sucesso:hover {
-            background-color: #218838;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Como a Web Funciona</title>
+<link rel="stylesheet" href="stys.css">
 </head>
+
 <body>
-    <main>
+<main>
 
-        <div class="passo ativo" id="passo-0">
-                        <p><strong>Bem-vindo ao Quiz de Computação!</strong><br>Você é um explorador digital prestes a navegar pelo mundo do hardware e software. Responda corretamente para chegar ao tesouro do conhecimento! Pronto?</p>
-            <button class="btn-proximo" data-proximo="1">Começar o Quiz!</button>
-        </div>
+<div class="passo ativo" id="passo-0">
+    <h1>🌐 Explorando a Web</h1>
+    <p>Aprenda como funcionam HTTP, HTTPS, Cliente e Servidor.</p>
+    <button class="btn-proximo" data-proximo="1">Começar</button>
+</div>
 
-        <div class="passo" id="passo-1">
-                        <p><strong>Pergunta 1:</strong> Qual componente é conhecido como o "cérebro" do computador, responsável por processar a maioria das instruções?</p>
-            <button class="btn-proximo" data-proximo="game-over">Memória RAM</button> <button class="btn-proximo" data-proximo="2">CPU (Unidade Central de Processamento)</button>
-            <button class="btn-proximo" data-proximo="game-over">Placa-mãe</button> </div>
+<div class="passo" id="passo-1">
+    <h2>🌐 O que é HTTP?</h2>
+    <p>HTTP é o protocolo que permite transferir dados na web entre navegador e servidor.</p>
+    <button class="btn-proximo" data-proximo="2">Próximo</button>
+</div>
 
-        <div class="passo" id="passo-2">
-                        <p><strong>Pergunta 2:</strong> Como são chamadas as partes *físicas* de um computador, como o teclado, mouse e monitor?</p>
-            <button class="btn-proximo" data-proximo="3">Hardware</button>
-            <button class="btn-proximo" data-proximo="game-over">Software</button> <button class="btn-proximo" data-proximo="game-over">Firmware</button> </div>
+<div class="passo" id="passo-2">
+    <h2>🔐 O que é HTTPS?</h2>
+    <p>HTTPS é a versão segura do HTTP, com criptografia que protege seus dados.</p>
+    <button class="btn-proximo" data-proximo="3">Próximo</button>
+</div>
 
-        <div class="passo" id="passo-3">
-                        <p><strong>Pergunta 3:</strong> E como são chamados os programas, aplicativos e o sistema operacional (a parte *lógica*)?</p>
-            <button class="btn-proximo" data-proximo="game-over">Hardware</button> <button class="btn-proximo" data-proximo="game-over">Hard Drive</button> <button class="btn-proximo" data-proximo="4">Software</button>
-        </div>
+<div class="passo" id="passo-3">
+    <h2>💻 O que é Cliente?</h2>
+    <p>Cliente é quem solicita informações — como seu navegador ou aplicativo.</p>
+    <button class="btn-proximo" data-proximo="4">Próximo</button>
+</div>
 
-        <div class="passo" id="passo-4">
-                        <p><strong>Pergunta 4:</strong> Qual tipo de memória é *volátil*, ou seja, perde seus dados quando o computador é desligado?</p>
-            <button class="btn-proximo" data-proximo="fim-sucesso">Memória RAM</button>
-            <button class="btn-proximo" data-proximo="game-over">SSD (Unidade de Estado Sólido)</button> <button class="btn-proximo" data-proximo="game-over">HD (Disco Rígido)</button> </div>
+<div class="passo" id="passo-4">
+    <h2>🖥 O que é Servidor?</h2>
+    <p>Servidor é quem responde às solicitações e fornece os dados.</p>
+    <button class="btn-proximo" data-proximo="fim">Finalizar</button>
+</div>
 
-        <div class="passo" id="game-over">             <p><strong>GAME OVER!</strong><br>Parece que você encontrou um bug! Mas não desanime, o mundo da tecnologia é feito de tentativas. Tente novamente!</p>
-            <button class="btn-proximo game-over-btn" data-proximo="0">Tentar Novamente</button>
-        </div>
+<div class="passo" id="fim">
+    <h2>🎉 Parabéns!</h2>
+    <p>Agora você entende como a internet funciona!</p>
+    <button class="btn-proximo" data-proximo="0">Reiniciar</button>
+</div>
 
-        <div class="passo" id="fim-sucesso">
-                        <p><strong>Parabéns! Você Conseguiu!</strong><br>Você navegou por todos os desafios e provou seu conhecimento. Você é um verdadeiro mestre da computação!</p>
-            <button class="btn-proximo fim-sucesso" data-proximo="0">Jogar de Novo</button>
-        </div>
+</main>
 
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const buttons = document.querySelectorAll('.btn-proximo');
-
-            buttons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const passoAtual = btn.closest('.passo');
-                    passoAtual.classList.remove('ativo');
-                    
-                    // Pega o ID do próximo passo (ex: "1", "game-over", "0")
-                    const proximoId = btn.dataset.proximo;
-                    
-                    let proximoPassoElement;
-                    
-                    // Lógica corrigida para encontrar o próximo passo
-                    if (proximoId === "0") {
-                        // Caso especial para reiniciar (vai para passo-0)
-                        proximoPassoElement = document.getElementById('passo-0');
-                    } else if (isNaN(proximoId)) {
-                        // Se não for um número (ex: "game-over" ou "fim-sucesso")
-                        proximoPassoElement = document.getElementById(proximoId);
-                    } else {
-                        // Se for um número (ex: "1", "2")
-                        proximoPassoElement = document.getElementById('passo-' + proximoId);
-                    }
-
-                    // Se encontrou o elemento, mostra
-                    if (proximoPassoElement) {
-                        proximoPassoElement.classList.add('ativo');
-                    }
-                });
-            });
-        });
-    </script>
+<script src="script.js"></script>
 </body>
 </html>
