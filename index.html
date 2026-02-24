@@ -5,6 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Como a Web Funciona</title>
 <link rel="stylesheet" href="stys.css">
+
+<style>
+img.futuro{
+    width: 100%;
+    max-width: 320px;
+    margin-top: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 25px cyan;
+    transition: transform .3s;
+}
+
+img.futuro:hover{
+    transform: scale(1.05);
+}
+</style>
 </head>
 
 <body>
@@ -13,36 +28,54 @@
 <div class="passo ativo" id="passo-0">
     <h1>🌐 Explorando a Web</h1>
     <p>Aprenda como funcionam HTTP, HTTPS, Cliente e Servidor.</p>
+
+    <img class="futuro" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa" alt="Internet futurista">
+
     <button class="btn-proximo" data-proximo="1">Começar</button>
 </div>
 
 <div class="passo" id="passo-1">
     <h2>🌐 O que é HTTP?</h2>
     <p>HTTP é o protocolo que permite transferir dados na web entre navegador e servidor.</p>
+
+    <img class="futuro" src="https://images.unsplash.com/photo-1518770660439-4636190af475" alt="Rede futurista">
+
     <button class="btn-proximo" data-proximo="2">Próximo</button>
 </div>
 
 <div class="passo" id="passo-2">
     <h2>🔐 O que é HTTPS?</h2>
     <p>HTTPS é a versão segura do HTTP, com criptografia que protege seus dados.</p>
+
+    <img class="futuro" src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b" alt="Segurança digital">
+
     <button class="btn-proximo" data-proximo="3">Próximo</button>
 </div>
 
 <div class="passo" id="passo-3">
     <h2>💻 O que é Cliente?</h2>
     <p>Cliente é quem solicita informações — como seu navegador ou aplicativo.</p>
+
+    <img class="futuro" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c" alt="Computador futurista">
+
     <button class="btn-proximo" data-proximo="4">Próximo</button>
 </div>
 
 <div class="passo" id="passo-4">
     <h2>🖥 O que é Servidor?</h2>
     <p>Servidor é quem responde às solicitações e fornece os dados.</p>
+
+    <img class="futuro" src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc" alt="Servidor futurista">
+
     <button class="btn-proximo" data-proximo="fim">Finalizar</button>
 </div>
 
 <div class="passo" id="fim">
     <h2>🎉 Parabéns!</h2>
     <p>Agora você entende como a internet funciona!</p>
+
+    <img class="futuro" src="https://images.unsplash.com/photo-1523961131990-5ea7c61b2107" alt="Futuro tecnologia">
+
     <button class="btn-proximo" data-proximo="0">Reiniciar</button>
 </div>
 
