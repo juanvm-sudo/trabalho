@@ -3,62 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mastering the Web | Guia Interativo</title>
+    <title>Jornada Dev: Entendendo a Web</title>
     <link rel="stylesheet" href="stys.css">
 </head>
 <body>
-    <main class="glass-container">
+    <main>
         <div class="passo ativo" id="passo-0">
-            <span class="badge">Introdução</span>
-            <h1>🌐 Explorando a Web</h1>
-            <p>A internet não é mágica, é infraestrutura. Vamos entender os pilares que sustentam sua navegação diária.</p>
-            <img class="img-futuro" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa" alt="Conexões globais">
-            <button class="btn-proximo" data-proximo="1">Iniciar Jornada</button>
-        </div>
-
-        <div class="passo" id="passo-1">
-            <h2>📜 O que é HTTP?</h2>
-            <p>É o idioma oficial da Web. Funciona num sistema de <strong>Requisição</strong> (você pede) e <strong>Resposta</strong> (o servidor entrega).</p>
-            <div class="info-extra">
-                <small>💡 Curiosidade: HTTP significa <em>HyperText Transfer Protocol</em>.</small>
+            <div class="content-box">
+                <h1>🌐 A Internet Desvendada</h1>
+                <p>Você já se perguntou o que acontece quando você digita um site? Vamos embarcar em uma jornada técnica para entender os pilares do mundo digital.</p>
+                <button class="btn-proximo" data-proximo="1">Iniciar Exploração</button>
             </div>
-            <img class="img-futuro" src="https://images.unsplash.com/photo-1518770660439-4636190af475" alt="Hardware de rede">
-            <button class="btn-proximo" data-proximo="2">Entendi, e a segurança?</button>
         </div>
 
-        <div class="passo" id="passo-2">
-            <h2>🔐 O que é HTTPS?</h2>
-            <p>É o HTTP com um "colete à prova de balas". Ele usa protocolos TLS/SSL para cifrar os dados.</p>
-            <ul class="check-list">
-                <li>✅ Protege senhas e cartões</li>
-                <li>✅ Garante que o site é autêntico</li>
-            </ul>
-            <img class="img-futuro" src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b" alt="Criptografia">
-            <button class="btn-proximo" data-proximo="3">Quem participa disso?</button>
+        <div class="passo" id="passo-1" style="background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=2000');">
+            <div class="content-box">
+                <h2>📜 O Protocolo HTTP</h2>
+                <p>O HTTP (HyperText Transfer Protocol) é o conjunto de regras que permite a transferência de dados na web. Sem ele, seu navegador e o servidor não falariam a mesma língua.</p>
+                <ul class="info-list">
+                    <li><strong>Request:</strong> O pedido que você faz.</li>
+                    <li><strong>Response:</strong> A resposta que você recebe.</li>
+                </ul>
+                <button class="btn-proximo" data-proximo="2">E a segurança?</button>
+            </div>
         </div>
 
-        <div class="passo" id="passo-3">
-            <h2>💻 O que é Cliente?</h2>
-            <p>É a ponta final. O seu navegador (Chrome, Safari) atua como o cliente que interpreta códigos (HTML/CSS) para você.</p>
-            <img class="img-futuro" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c" alt="Usuário no computador">
-            <button class="btn-proximo" data-proximo="4">E quem responde?</button>
+        <div class="passo" id="passo-2" style="background-image: url('https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2000');">
+            <div class="content-box">
+                <h2>🔐 HTTPS: O Escudo Digital</h2>
+                <p>O 'S' faz toda a diferença. O HTTPS utiliza criptografia SSL/TLS para garantir que ninguém intercepte seus dados sensíveis entre o seu PC e o servidor.</p>
+                <p>É essencial para e-commerces e bancos online!</p>
+                <button class="btn-proximo" data-proximo="3">Quem é o Cliente?</button>
+            </div>
         </div>
 
-        <div class="passo" id="passo-4">
-            <h2>🖥 O que é Servidor?</h2>
-            <p>Computadores potentes que ficam ligados 24/7. Eles "servem" os arquivos que o cliente solicitou.</p>
-            <img class="img-futuro" src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc" alt="Data Center">
-            <button class="btn-proximo" data-proximo="fim">Concluir</button>
+        <div class="passo" id="passo-3" style="background-image: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2000');">
+            <div class="content-box">
+                <h2>💻 O Lado do Cliente (Frontend)</h2>
+                <p>O Cliente é você! Mais especificamente, o seu navegador (Chrome, Firefox, Safari). Ele interpreta HTML, CSS e JavaScript para renderizar a interface que você vê.</p>
+                <button class="btn-proximo" data-proximo="4">Onde os dados moram?</button>
+            </div>
         </div>
 
-        <div class="passo" id="fim">
-            <h2>🎉 Você subiu de nível!</h2>
-            <p>Agora você domina o fluxo básico da comunicação digital.</p>
-            <img class="img-futuro" src="https://images.unsplash.com/photo-1523961131990-5ea7c61b2107" alt="IA e Futuro">
-            <button class="btn-proximo" data-proximo="0">Estudar Novamente</button>
-        </div>
-    </main>
-
-    <script src="script.js"></script>
-</body>
-</html>
+        <div class="passo" id="passo-4" style="background-image: url('https://images.unsplash.
