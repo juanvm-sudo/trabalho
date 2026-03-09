@@ -16,10 +16,10 @@
             </div>
         </div>
 
-        <div class="passo" id="passo-1" style="background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=2000');">
+        <div class="passo" id="passo-1">
             <div class="content-box">
                 <h2>📜 O Protocolo HTTP</h2>
-                <p>O HTTP (HyperText Transfer Protocol) é o conjunto de regras que permite a transferência de dados na web. Sem ele, seu navegador e o servidor não falariam a mesma língua.</p>
+                <p>O HTTP é o conjunto de regras que permite a transferência de dados. Sem ele, seu navegador e o servidor não falariam a mesma língua.</p>
                 <ul class="info-list">
                     <li><strong>Request:</strong> O pedido que você faz.</li>
                     <li><strong>Response:</strong> A resposta que você recebe.</li>
@@ -28,21 +28,50 @@
             </div>
         </div>
 
-        <div class="passo" id="passo-2" style="background-image: url('https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2000');">
+        <div class="passo" id="passo-2">
             <div class="content-box">
                 <h2>🔐 HTTPS: O Escudo Digital</h2>
-                <p>O 'S' faz toda a diferença. O HTTPS utiliza criptografia SSL/TLS para garantir que ninguém intercepte seus dados sensíveis entre o seu PC e o servidor.</p>
-                <p>É essencial para e-commerces e bancos online!</p>
+                <p>O 'S' significa Secure. Ele utiliza criptografia SSL/TLS para garantir que ninguém intercepte seus dados sensíveis.</p>
                 <button class="btn-proximo" data-proximo="3">Quem é o Cliente?</button>
             </div>
         </div>
 
-        <div class="passo" id="passo-3" style="background-image: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2000');">
+        <div class="passo" id="passo-3">
             <div class="content-box">
                 <h2>💻 O Lado do Cliente (Frontend)</h2>
-                <p>O Cliente é você! Mais especificamente, o seu navegador (Chrome, Firefox, Safari). Ele interpreta HTML, CSS e JavaScript para renderizar a interface que você vê.</p>
+                <p>O Cliente é o seu navegador. Ele interpreta <strong>HTML</strong> (estrutura), <strong>CSS</strong> (estilo) e <strong>JavaScript</strong> (interação).</p>
                 <button class="btn-proximo" data-proximo="4">Onde os dados moram?</button>
             </div>
         </div>
 
-        <div class="passo" id="passo-4" style="background-image: url('https://images.unsplash.
+        <div class="passo" id="passo-4">
+            <div class="content-box">
+                <h2>⚙️ O Lado do Servidor (Backend)</h2>
+                <p>O Servidor é onde a mágica acontece longe dos seus olhos. Ele processa regras de negócio e consulta o Banco de Dados.</p>
+                <button class="btn-proximo" data-proximo="5">Concluir Jornada</button>
+            </div>
+        </div>
+
+        <div class="passo" id="passo-5">
+            <div class="content-box">
+                <h2>🚀 Parabéns, Explorer!</h2>
+                <p>Você agora entende o fluxo básico da web. Pronto para começar a codar seus próprios projetos?</p>
+                <button class="btn-proximo" data-proximo="0">Reiniciar Trilha</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="chatbot-container">
+        <div id="chat-header">🤖 Assistente Dev</div>
+        <div id="chat-messages">
+            <div class="bot-msg">Olá! Tem alguma dúvida sobre a jornada? Pergunte sobre HTTP, HTML ou CSS!</div>
+        </div>
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Digite sua dúvida...">
+            <button id="btn-chat">Enviar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
