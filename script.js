@@ -25,10 +25,10 @@ function responder(texto) {
     if(msg.includes("get")) resposta = "é um método fundamental do protocolo HTTP usado para solicitar e recuperar dados de um servidor, como páginas web, imagens ou respostas de APIs, sem alterar o estado do recurso.";
     if(msg.includes("post")) resposta = " é utilizado para enviar dados a um servidor, geralmente criando um novo recurso ou processando informações, como formulários HTML.";
     if(msg.includes("put")) resposta = " é um método de requisição utilizado para criar um novo recurso ou substituir completamente a representação de um recurso existente em uma URL específica.";
+    if(msg.includes("rei")) resposta = "O grande PELÉ";                                                                                 
+    if(msg.includes("pele")) resposta ="https://www.youtube.com/shorts/r4PT8nXVIe8, edit!!!!!!!!";
     if(msg.includes("segurança") || msg.includes("https")) resposta = "O HTTPS protege seus dados com criptografia. É o cadeado verde no navegador!";
-    if(msg.includes("Rei")) resposta = "O grande PELÉ"
-    if(msg.includes("pele")) resposta ="https://www.youtube.com/shorts/r4PT8nXVIe8, edit!!!!!!!!"
-
+    
     adicionarMensagem(resposta, 'bot-msg');
 }
 
