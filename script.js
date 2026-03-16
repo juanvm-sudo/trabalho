@@ -22,9 +22,9 @@ function responder(texto) {
     if(msg.includes("http")) resposta = "O HTTP é como o carteiro da web: ele leva e traz mensagens!";
     if(msg.includes("html")) resposta = "O HTML é o esqueleto do site. Sem ele, nada existe!";
     if(msg.includes("css")) resposta = "O CSS é a maquiagem e a roupa do site. Ele deixa tudo bonito.";
-    if(msg.includes("get")) resposta = "O CSS é a maquiagem e a roupa do site. Ele deixa tudo bonito.";
-    if(msg.includes("post")) resposta = "O CSS é a maquiagem e a roupa do site. Ele deixa tudo bonito.";
-    if(msg.includes("put")) resposta = "O CSS é a maquiagem e a roupa do site. Ele deixa tudo bonito.";
+    if(msg.includes("get")) resposta = "é um método fundamental do protocolo HTTP usado para solicitar e recuperar dados de um servidor, como páginas web, imagens ou respostas de APIs, sem alterar o estado do recurso.";
+    if(msg.includes("post")) resposta = " é utilizado para enviar dados a um servidor, geralmente criando um novo recurso ou processando informações, como formulários HTML.";
+    if(msg.includes("put")) resposta = " é um método de requisição utilizado para criar um novo recurso ou substituir completamente a representação de um recurso existente em uma URL específica.";
     if(msg.includes("segurança") || msg.includes("https")) resposta = "O HTTPS protege seus dados com criptografia. É o cadeado verde no navegador!";
 
     adicionarMensagem(resposta, 'bot-msg');
