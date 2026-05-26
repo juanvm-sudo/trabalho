@@ -3,83 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Café Aroma & Arte | Home</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <title>Café Aroma - O Seu Momento</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header class="header">
+    <!-- Cabeçalho / Navegação -->
+    <header>
         <div class="logo">☕ Café Aroma</div>
-        <nav class="navbar">
-            <a href="#inicio">Início</a>
-            <a href="#sobre">Sobre Nós</a>
+        <nav>
+            <a href="#home">Início</a>
             <a href="#menu">Cardápio</a>
-            <a href="#suporte">Suporte</a>
             <a href="#contato">Contato</a>
         </nav>
     </header>
 
-    <section id="inicio" class="banner">
-        <div class="banner-content">
+    <!-- Seção Principal (Home) -->
+    <section id="home" class="hero">
+        <div class="hero-content">
             <h1>O café perfeito para o seu dia</h1>
-            <p>Grãos selecionados, ambiente aconchegante e Wi-Fi gratuito.</p>
+            <p>Grãos selecionados, ambiente aconchegante e torra artesanal.</p>
             <a href="#menu" class="btn">Ver Cardápio</a>
         </div>
     </section>
 
-    <section id="sobre" class="about-section">
-        <h2>Nossa História</h2>
-        <p>Fundado no coração da cidade, o Café Aroma nasceu da paixão por aproximar pessoas através de uma boa xícara de café. Trabalhamos exclusivamente com produtores locais e torrefação artesanal para garantir o melhor sabor.</p>
-    </section>
-
+    <!-- Seção do Cardápio -->
     <section id="menu" class="menu-section">
-        <h2>Destaques do Cardápio</h2>
+        <h2>Nosso Cardápio</h2>
+        <div class="menu-filters">
+            <button class="filter-btn active" data-filter="todos">Todos</button>
+            <button class="filter-btn" data-filter="quentes">Quentes</button>
+            <button class="filter-btn" data-filter="gelados">Gelados</button>
+        </div>
+
         <div class="menu-grid">
-            <div class="menu-card">
+            <div class="menu-item" data-category="quentes">
                 <h3>Espresso Tradicional</h3>
-                <p>Intenso, encorpado e com crema perfeita.</p>
+                <p>Café concentrado com aroma intenso.</p>
                 <span class="price">R$ 7,00</span>
             </div>
-            <div class="menu-card">
-                <h3>Cappuccino Italiano</h3>
-                <p>Café espresso, leite vaporizado e muita espuma.</p>
+            <div class="menu-item" data-category="quentes">
+                <h3>Capuccino Italiano</h3>
+                <p>Espresso com leite vaporizado e canela.</p>
                 <span class="price">R$ 11,00</span>
             </div>
-            <div class="menu-card">
-                <h3>Croissant de Manteiga</h3>
-                <p>Folhado, crocante e quentinho, direto do forno.</p>
-                <span class="price">R$ 9,50</span>
+            <div class="menu-item" data-category="gelados">
+                <h3>Iced Latte</h3>
+                <p>Café expresso gelado batido com leite integral.</p>
+                <span class="price">R$ 13,00</span>
+            </div>
+            <div class="menu-item" data-category="gelados">
+                <h3>Frappé de Caramelo</h3>
+                <p>Bebida cremosa com chantilly e calda.</p>
+                <span class="price">R$ 16,00</span>
             </div>
         </div>
     </section>
 
-    <section id="suporte" class="chat-section">
-        <h2>Dúvidas? Pergunte ao nosso Assistente Virtual!</h2>
-        <p>Converse com o nosso robô para saber mais sobre café, HTTP ou desenvolvimento web.</p>
-        <div class="chat-container">
-            <div id="chat-messages" class="chat-messages">
-                <div class="bot-msg">Olá! Sou o assistente do Café Aroma. Pergunte-me sobre "HTTP", "HTML", "CSS", "GET", "POST", "PUT" ou "Segurança"!</div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Digite sua mensagem aqui...">
-                <button id="btn-chat">Enviar</button>
-            </div>
-        </div>
+    <!-- Seção de Contato -->
+    <section id="contato" class="contact-section">
+        <h2>Fale Conosco</h2>
+        <form id="contactForm" class="contact-form">
+            <input type="text" id="name" placeholder="Seu Nome" required>
+            <input type="email" id="email" placeholder="Seu E-mail" required>
+            <textarea id="message" placeholder="Sua Mensagem" rows="5" required></textarea>
+            <button type="submit" class="btn">Enviar Mensagem</button>
+        </form>
     </section>
 
-    <section id="contato" class="maps-section">
-        <h2>Onde Estamos</h2>
-        <div class="map-container">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.197542431223!2d-46.65899572377259!3d-23.561349667185012!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c8da0605bb%3A0x6508ffbbf1f2f6f3!2sAv.%20Paulista%20-%20Bela%20Vista%2C%20S%C3%A3o%20Paulo%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1710000000000!5m2!1spt-BR!2sbr" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <p>© 2026 Café Aroma & Arte. Todos os direitos reservados.</p>
-        <p>Desenvolvido como projeto acadêmico por [Nome do Grupo].</p>
+    <!-- Rodapé -->
+    <footer>
+        <p>&copy; 2026 Café Aroma. Todos os direitos reservados.</p>
     </footer>
 
     <script src="script.js"></script>
