@@ -1,79 +1,86 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jornada Dev: Entendendo a Web</title>
-    <link rel="stylesheet" href="stys.css">
+    <title>Café Aroma & Arte | Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main>
-        <div class="passo ativo" id="passo-0">
-            <div class="content-box">
-                <h1>🌐 A Internet Desvendada</h1>
-                <p>Você já se perguntou o que acontece quando você digita um site? Vamos embarcar em uma jornada técnica para entender os pilares do mundo digital.</p>
-                <button class="btn-proximo" data-proximo="1">Iniciar Exploração</button>
+
+    <header class="header">
+        <div class="logo">☕ Café Aroma</div>
+        <nav class="navbar">
+            <a href="#inicio">Início</a>
+            <a href="#sobre">Sobre Nós</a>
+            <a href="#menu">Cardápio</a>
+            <a href="#suporte">Suporte</a>
+            <a href="#contato">Contato</a>
+        </nav>
+    </header>
+
+    <section id="inicio" class="banner">
+        <div class="banner-content">
+            <h1>O café perfeito para o seu dia</h1>
+            <p>Grãos selecionados, ambiente aconchegante e Wi-Fi gratuito.</p>
+            <a href="#menu" class="btn">Ver Cardápio</a>
+        </div>
+    </section>
+
+    <section id="sobre" class="about-section">
+        <h2>Nossa História</h2>
+        <p>Fundado no coração da cidade, o Café Aroma nasceu da paixão por aproximar pessoas através de uma boa xícara de café. Trabalhamos exclusivamente com produtores locais e torrefação artesanal para garantir o melhor sabor.</p>
+    </section>
+
+    <section id="menu" class="menu-section">
+        <h2>Destaques do Cardápio</h2>
+        <div class="menu-grid">
+            <div class="menu-card">
+                <h3>Espresso Tradicional</h3>
+                <p>Intenso, encorpado e com crema perfeita.</p>
+                <span class="price">R$ 7,00</span>
+            </div>
+            <div class="menu-card">
+                <h3>Cappuccino Italiano</h3>
+                <p>Café espresso, leite vaporizado e muita espuma.</p>
+                <span class="price">R$ 11,00</span>
+            </div>
+            <div class="menu-card">
+                <h3>Croissant de Manteiga</h3>
+                <p>Folhado, crocante e quentinho, direto do forno.</p>
+                <span class="price">R$ 9,50</span>
             </div>
         </div>
+    </section>
 
-        <div class="passo" id="passo-1">
-            <div class="content-box">
-                <h2>📜 O Protocolo HTTP</h2>
-                <p>O HTTP é o conjunto de regras que permite a transferência de dados. Sem ele, seu navegador e o servidor não falariam a mesma língua.</p>
-                <ul class="info-list">
-                    <li><strong>Request:</strong> O pedido que você faz.</li>
-                    <li><strong>Response:</strong> A resposta que você recebe.</li>
-                </ul>
-                <button class="btn-proximo" data-proximo="2">E a segurança?</button>
+    <section id="suporte" class="chat-section">
+        <h2>Dúvidas? Pergunte ao nosso Assistente Virtual!</h2>
+        <p>Converse com o nosso robô para saber mais sobre café, HTTP ou desenvolvimento web.</p>
+        <div class="chat-container">
+            <div id="chat-messages" class="chat-messages">
+                <div class="bot-msg">Olá! Sou o assistente do Café Aroma. Pergunte-me sobre "HTTP", "HTML", "CSS", "GET", "POST", "PUT" ou "Segurança"!</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Digite sua mensagem aqui...">
+                <button id="btn-chat">Enviar</button>
             </div>
         </div>
+    </section>
 
-        <div class="passo" id="passo-2">
-            <div class="content-box">
-                <h2>🔐 HTTPS: O Escudo Digital</h2>
-                <p>O 'S' significa Secure. Ele utiliza criptografia SSL/TLS para garantir que ninguém intercepte seus dados sensíveis.</p>
-                <button class="btn-proximo" data-proximo="3">Quem é o Cliente?</button>
-            </div>
+    <section id="contato" class="maps-section">
+        <h2>Onde Estamos</h2>
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.197542431223!2d-46.65899572377259!3d-23.561349667185012!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c8da0605bb%3A0x6508ffbbf1f2f6f3!2sAv.%20Paulista%20-%20Bela%20Vista%2C%20S%C3%A3o%20Paulo%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1710000000000!5m2!1spt-BR!2sbr" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
+    </section>
 
-        <div class="passo" id="passo-3">
-            <div class="content-box">
-                <h2>💻 O Lado do Cliente (Frontend)</h2>
-                <p>O Cliente é o seu navegador. Ele interpreta <strong>HTML</strong> (estrutura), <strong>CSS</strong> (estilo) e <strong>JavaScript</strong> (interação).</p>
-                <button class="btn-proximo" data-proximo="4">Onde os dados moram?</button>
-            </div>
-        </div>
-
-        <div class="passo" id="passo-4">
-            <div class="content-box">
-                <h2>⚙️ O Lado do Servidor (Backend)</h2>
-                <p>O Servidor é onde a mágica acontece longe dos seus olhos. Ele processa regras de negócio e consulta o Banco de Dados.</p>
-                <button class="btn-proximo" data-proximo="5">Concluir Jornada</button>
-            </div>
-        </div>
-
-        <div class="passo" id="passo-5">
-            <div class="content-box">
-                <h2>🚀 Parabéns, Explorer!</h2>
-                <p>Você agora entende o fluxo básico da web. Pronto para começar a codar seus próprios projetos?</p>
-                
-                <a href="https://www.youtube.com/watch?v=PcHbyGVoqZk" target="_blank" class="btn-link-externo">Acessar Conteúdo Extra</a>
-                
-                <button class="btn-proximo" data-proximo="0">Reiniciar Trilha</button>
-            </div>
-        </div>
-    </main>
-
-    <div id="chatbot-container">
-        <div id="chat-header">🤖 Assistente Dev</div>
-        <div id="chat-messages">
-            <div class="bot-msg">Olá! Tem alguma dúvida sobre a jornada? Pergunte sobre HTTP, HTML, CSS, GET, POST ou PUT!</div>
-        </div>
-        <div id="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Digite sua dúvida...">
-            <button id="btn-chat">Enviar</button>
-        </div>
-    </div>
+    <footer class="footer">
+        <p>© 2026 Café Aroma & Arte. Todos os direitos reservados.</p>
+        <p>Desenvolvido como projeto acadêmico por [Nome do Grupo].</p>
+    </footer>
 
     <script src="script.js"></script>
 </body>
