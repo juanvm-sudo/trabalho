@@ -3,49 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema Completo - Automação de Mercadinho de Esquina</title>
+  <title>Mercadinho de Esquina - Sistema do Caio</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <header>
-    <h1>🏪 Mercadinho Express <span style="font-size: 0.8rem; font-weight: normal; opacity: 0.8;">Automação Completa</span></h1>
-    <div class="header-info" id="relogio-sistema">Carregando data...</div>
+    <h1>🛒 Mercadinho Express <span>(Feito nas coxas mas funciona)</span></h1>
+    <div class="header-info" id="relogio-sistema">Carregando hora...</div>
   </header>
 
   <div class="main-container">
-    <!-- COLUNA 1: PDV / FRENTE DE CAIXA -->
+    <!-- COLUNA 1: CAIXA / PDV -->
     <div class="panel">
-      <h2>🛒 Frente de Caixa (PDV)</h2>
+      <h2>Frente de Caixa</h2>
 
       <div class="search-box">
-        <input type="text" id="input-busca" placeholder="Bipar código ou pesquisar produto..." oninput="filtrarCatalogo()">
+        <input type="text" id="input-busca" placeholder="Pesquisar produto ou código..." oninput="filtrarCatalogo()">
       </div>
 
       <div class="products-grid" id="grid-catalogo">
-        <!-- Gerado via JS -->
+        <!-- Produtos carregados via JS -->
       </div>
 
-      <div style="font-weight: 600; font-size: 0.9rem; margin-top: 5px;">Itens no Carrinho</div>
+      <h3>Carrinho de Compras</h3>
       <div class="cart-table-container">
         <table>
           <thead>
             <tr>
-              <th>Produto</th>
+              <th>Item</th>
               <th>Qtd</th>
-              <th>Subtotal</th>
+              <th>Preço</th>
               <th>#</th>
             </tr>
           </thead>
           <tbody id="lista-carrinho">
-            <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Carrinho vazio</td></tr>
+            <tr><td colspan="4" style="text-align:center;">Carrinho tá vazio mano</td></tr>
           </tbody>
         </table>
       </div>
 
-      <div>
-        <div style="font-size: 0.8rem; color: var(--text-muted); text-align: right;">Total a Pagar</div>
-        <div class="cart-total">R$ <span id="txt-total">0,00</span></div>
+      <div class="cart-total-box">
+        <span>Total:</span>
+        <span class="cart-total">R$ <span id="txt-total">0.00</span></span>
       </div>
 
       <div class="checkout-actions">
@@ -55,15 +55,14 @@
       </div>
     </div>
 
-    <!-- COLUNA 2: ESTOQUE INTELIGENTE & CADASTRO -->
+    <!-- COLUNA 2: ESTOQUE E NOVO PRODUTO -->
     <div class="panel">
-      <h2>📦 Estoque & Cadastro</h2>
+      <h2>Estoque & Cadastro</h2>
 
-      <!-- Nova funcionalidade: Formulário rápido para cadastrar produto -->
       <form class="form-add-produto" onsubmit="adicionarNovoProduto(event)">
         <div class="form-row">
           <input type="text" id="cad-nome" placeholder="Nome do produto" required>
-          <input type="text" id="cad-codigo" placeholder="Código" required style="width: 80px;">
+          <input type="text" id="cad-codigo" placeholder="Código" required style="width: 90px;">
         </div>
         <div class="form-row">
           <input type="number" step="0.01" id="cad-preco" placeholder="Preço (R$)" required>
@@ -89,35 +88,32 @@
         </table>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 10px;">
-        <div class="metric-card alert" id="alerta-vencimento-card">
-          <div>
-            <div class="metric-title">Atenção Validade</div>
-            <div class="metric-value" id="qtd-vencimento">0 itens</div>
-          </div>
-          <button class="btn" style="background:var(--danger); padding:6px 10px; font-size:0.75rem;" onclick="gerarPromocaoRelampago()">Oferta Relâmpago</button>
+      <div class="metric-card alert">
+        <div>
+          <div class="metric-title">Produtos Quase Vencendo</div>
+          <div class="metric-value" id="qtd-vencimento">0 itens</div>
         </div>
+        <button class="btn btn-cancel" style="font-size: 0.8rem;" onclick="gerarPromocaoRelampago()">Desconto Relâmpago (25%)</button>
       </div>
     </div>
 
     <!-- COLUNA 3: FINANCEIRO & MARKETING -->
     <div class="panel">
-      <h2>💰 Fechamento & Marketing</h2>
+      <h2>Caixa & WhatsApp</h2>
 
       <div class="metric-card">
         <div>
-          <div class="metric-title">Faturamento Hoje (Caixa)</div>
-          <div class="metric-value" id="faturamento-hoje">R$ 0,00</div>
+          <div class="metric-title">Faturamento Hoje</div>
+          <div class="metric-value" id="faturamento-hoje">R$ 0.00</div>
         </div>
-        <span style="font-size: 1.5rem;">📊</span>
       </div>
 
-      <div style="font-weight: 600; font-size: 0.9rem; margin-top: 5px;">🤖 WhatsApp Business (Disparos)</div>
+      <h3>Disparo no WhatsApp do Bairro</h3>
       <div class="whatsapp-preview" id="whatsapp-preview-box">
-        <div class="wa-msg">Olá vizinho! 🛒 Hoje temos Leite Integral fresco e Pão quentinho saindo às 16h. Venha conferir!</div>
+        <div class="wa-msg">Salve galera do bairro! Pão quentinho e refri gelado na promoção hoje, brota! 🔥</div>
       </div>
 
-      <button class="btn btn-primary" onclick="enviarOfertaWhatsApp()">Disparar Oferta no Bairro</button>
+      <button class="btn btn-primary" onclick="enviarOfertaWhatsApp()">Disparar Mensagem</button>
     </div>
   </div>
 
@@ -125,18 +121,12 @@
   <div class="modal-overlay" id="modal-checkout">
     <div class="modal-box">
       <h3 id="modal-titulo">Pagamento</h3>
-      <p id="modal-subtexto" style="font-size: 0.9rem; color: var(--text-muted);"></p>
+      <p id="modal-subtexto"></p>
       <div class="qr-placeholder" id="modal-conteudo-dinamico">
-        [ QR CODE PIX GERADO ]
+        [ CARREGANDO... ]
       </div>
-
-      <!-- Banner de agradecimento exibido na confirmação de compra -->
-      <div id="modal-sucesso-banner" style="display: none;">
-        <img src="juan.jpg" alt="Agradecimento pela compra" class="receipt-banner">
-      </div>
-
-      <button class="btn btn-primary" id="btn-confirmar-pagamento" onclick="concluirVenda()">Confirmar Pagamento & Emitir NFC-e</button>
-      <button class="btn btn-cancel" style="width:100%; background:#ccc; color:#333;" onclick="fecharModal()">Voltar</button>
+      <button class="btn btn-primary" id="btn-confirmar-pagamento" onclick="concluirVenda()">Finalizar Venda</button>
+      <button class="btn btn-cancel" style="background:#888;" onclick="fecharModal()">Voltar</button>
     </div>
   </div>
 
