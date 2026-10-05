@@ -28,7 +28,7 @@ function iniciarRelogio() {
   }, 1000);
 }
 
-// TOGGLE E CONTROLE DO DRAWER LATERAL DE CONFIGURAÇÕES
+// TOGGLE DRAWER
 function toggleDrawer() {
   const drawer = document.getElementById('side-drawer');
   const overlay = document.getElementById('drawer-overlay');
@@ -45,7 +45,7 @@ function mudarAba(abaId, btn) {
 }
 
 function renderizarTudo() {
-  renderizarCatalogo(produtos);
+  renderizarListaCodigos();
   renderizarEstoque();
   renderizarCarrinho();
   verificarAlertasValidade();
@@ -53,48 +53,76 @@ function renderizarTudo() {
   salvarDados();
 }
 
-// PDV: Catalogo
-function renderizarCatalogo(lista) {
-  const grid = document.getElementById('grid-catalogo');
-  grid.innerHTML = '';
+// RENDERIZA A LISTA VISÍVEL DE CÓDIGOS E PRODUTOS NA FRENTE DO CAIXA
+function renderizarListaCodigos() {
+  const tbody = document.getElementById('lista-codigos-produtos');
+  tbody.innerHTML = '';
 
-  if (lista.length === 0) {
-    grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#94a3b8;">Nenhum produto encontrado.</p>';
+  if (produtos.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="3" class="text-center">Nenhum produto cadastrado</td></tr>';
     return;
   }
 
-  lista.forEach(p => {
-    grid.innerHTML += `
-      <div class="prod-card" onclick="adicionarAoCarrinho(${p.id})">
-        <span class="name">${p.nome}</span>
-        <span class="price">R$ ${p.preco.toFixed(2)}</span>
-      </div>
+  produtos.forEach(p => {
+    tbody.innerHTML += `
+      <tr class="clickable-row" onclick="preencherEPesquisar('${p.codigo}')" title="Clique para adicionar">
+        <td><span class="tag-codigo">${p.codigo}</span></td>
+        <td>${p.nome}</td>
+        <td class="text-right">R$ ${p.preco.toFixed(2)}</td>
+      </tr>
     `;
   });
 }
 
-function filtrarCatalogo() {
-  const termo = document.getElementById('input-busca').value.toLowerCase();
-  const filtrados = produtos.filter(p => 
-    p.nome.toLowerCase().includes(termo) || p.codigo.includes(termo)
-  );
-  renderizarCatalogo(filtrados);
+function preencherEPesquisar(codigo) {
+  const input = document.getElementById('input-codigo');
+  input.value = codigo;
+  adicionarPorCodigoForm(new Event('submit'));
 }
 
-// PDV: Carrinho
-function adicionarAoCarrinho(id) {
-  const p = produtos.find(item => item.id === id);
-  if (!p || p.estoque <= 0) return alert("Produto esgotado!");
+// ADICIONAR PRODUTO PELO CÓDIGO (LEITOR / ENTER)
+function adicionarPorCodigoForm(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById('input-codigo');
+  const codigoBipado = input.value.trim();
 
-  const itemCart = carrinho.find(item => item.id === id);
+  if (!codigoBipado) return;
+
+  const produto = produtos.find(p => p.codigo === codigoBipado);
+
+  if (!produto) {
+    alert("Produto não encontrado!");
+    input.select();
+    return;
+  }
+
+  if (produto.estoque <= 0) {
+    alert("Produto esgotado no estoque!");
+    input.select();
+    return;
+  }
+
+  // Atualiza card visual do último produto
+  document.getElementById('info-prod-nome').innerText = produto.nome;
+  document.getElementById('info-prod-codigo').innerText = produto.codigo;
+  document.getElementById('info-prod-preco').innerText = `R$ ${produto.preco.toFixed(2)}`;
+
+  // Adiciona ao carrinho
+  const itemCart = carrinho.find(item => item.id === produto.id);
   if (itemCart) {
-    if (itemCart.qtd >= p.estoque) return alert("Limite de estoque atingido!");
+    if (itemCart.qtd >= produto.estoque) {
+      alert("Quantidade máxima disponível em estoque atingida!");
+      input.select();
+      return;
+    }
     itemCart.qtd++;
   } else {
-    carrinho.push({ id: p.id, nome: p.nome, preco: p.preco, qtd: 1 });
+    carrinho.push({ id: produto.id, codigo: produto.codigo, nome: produto.nome, preco: produto.preco, qtd: 1 });
   }
 
   renderizarCarrinho();
+  input.value = '';
+  input.focus();
 }
 
 function alterarQtdCarrinho(id, delta) {
@@ -129,7 +157,7 @@ function renderizarCarrinho() {
   tbody.innerHTML = '';
 
   if (carrinho.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">Carrinho vazio</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">Carrinho vazio</td></tr>';
     txtTotal.innerText = '0.00';
     txtSubtotal.innerText = '0.00';
     return;
@@ -141,6 +169,7 @@ function renderizarCarrinho() {
     total += sub;
     tbody.innerHTML += `
       <tr>
+        <td>${item.codigo}</td>
         <td>${item.nome}</td>
         <td class="text-center">
           <button class="btn btn-sm" onclick="alterarQtdCarrinho(${item.id}, -1)">-</button>
@@ -175,7 +204,7 @@ function adicionarNovoProduto(e) {
   produtos.push(novo);
   renderizarTudo();
   e.target.reset();
-  alert("Produto cadastrado!");
+  alert("Produto cadastrado com sucesso!");
 }
 
 // DRAWER: Estoque
@@ -226,7 +255,7 @@ function gerarPromocaoRelampago() {
   alert(`Desconto de 25% aplicado em ${aplicados} produto(s)!`);
 }
 
-// Modal Checkout & Metricas
+// Modal Checkout & Métricas
 function abrirCheckout(tipo) {
   if (carrinho.length === 0) return alert("Carrinho vazio!");
 
@@ -270,7 +299,7 @@ function atualizarMetricas() {
 function enviarOfertaWhatsApp() {
   const input = document.getElementById('wa-input-custom');
   const box = document.getElementById('whatsapp-preview-box');
-  const mensagem = input.value.trim() || "🔥 Promoção especial no Mercadinho! Brota!";
+  const mensagem = input.value.trim() || "🔥 Promoção especial no Mercadinho!";
 
   box.innerHTML += `
     <div class="wa-msg outgoing">

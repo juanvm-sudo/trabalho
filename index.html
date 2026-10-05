@@ -22,7 +22,6 @@
     <div class="header-controls">
       <div class="status-badge live"><span class="dot"></span> Caixa Aberto</div>
       <div id="relogio-sistema" class="clock-display">--:--:--</div>
-      <!-- BOTÃO DE ACESSO RÁPIDO PARA O PAINEL LATERAL -->
       <button class="btn btn-config" onclick="toggleDrawer()">
         ⚙️ Configurações & Gestão
       </button>
@@ -37,19 +36,55 @@
   <!-- CONTEÚDO PRINCIPAL: FRENTE DE CAIXA -->
   <main class="main-pdv-container">
     
-    <!-- COLUNA ESQUERDA: CATÁLOGO DE PRODUTOS -->
-    <section class="pdv-section catalog-section">
+    <!-- COLUNA ESQUERDA: BUSCA POR CÓDIGO E LISTA DE CÓDIGOS -->
+    <section class="pdv-section search-section">
       <div class="section-header">
-        <h2>⚡ Produtos</h2>
-        <span class="badge-tag">Clique para Adicionar</span>
+        <h2>🔍 Adicionar por Código</h2>
+        <span class="badge-tag">Leitor / Digitação</span>
       </div>
 
-      <div class="search-box">
-        <input type="text" id="input-busca" placeholder="🔍 Buscar por nome ou código..." oninput="filtrarCatalogo()">
+      <!-- FORMULÁRIO DE PESQUISA -->
+      <form class="code-search-box" onsubmit="adicionarPorCodigoForm(event)">
+        <label for="input-codigo">Digite ou bip o código do produto:</label>
+        <div class="input-group">
+          <input type="text" id="input-codigo" placeholder="Ex: 101" autofocus required>
+          <button type="submit" class="btn btn-accent">Adicionar</button>
+        </div>
+      </form>
+
+      <!-- PAINEL DE INFORMAÇÃO DO ÚLTIMO ITEM CONSULTADO -->
+      <div class="last-product-card" id="card-ultimo-produto">
+        <span class="card-label">Último item consultado</span>
+        <h3 id="info-prod-nome">Nenhum produto selecionado</h3>
+        <div class="product-details-grid">
+          <div>
+            <span class="detail-title">Código</span>
+            <span class="detail-value" id="info-prod-codigo">---</span>
+          </div>
+          <div>
+            <span class="detail-title">Preço Unitário</span>
+            <span class="detail-value highlight" id="info-prod-preco">R$ 0.00</span>
+          </div>
+        </div>
       </div>
 
-      <div class="products-grid" id="grid-catalogo">
-        <!-- Produtos injetados via JS -->
+      <!-- LISTA DE CÓDIGOS E PRODUTOS (PARA CONSULTA RÁPIDA) -->
+      <div class="quick-reference-box">
+        <h3>📋 Lista de Códigos dos Produtos</h3>
+        <div class="table-wrapper mini-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nome do Produto</th>
+                <th class="text-right">Preço</th>
+              </tr>
+            </thead>
+            <tbody id="lista-codigos-produtos">
+              <!-- Preenchido via JavaScript -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -64,6 +99,7 @@
         <table>
           <thead>
             <tr>
+              <th>Cód.</th>
               <th>Item</th>
               <th class="text-center">Qtd</th>
               <th class="text-right">Unit.</th>

@@ -63,7 +63,6 @@ body {
   background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px;
 }
 
-/* Botão de Configurações */
 .btn-config {
   background: #3b82f6; color: white;
   border: none; padding: 8px 14px; border-radius: 6px;
@@ -78,10 +77,10 @@ body {
 }
 .promo-banner { width: 100%; max-width: 1200px; object-fit: cover; }
 
-/* PDV layout exclusivo na tela principal */
+/* Layout PDV */
 .main-pdv-container {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1fr 1.2fr;
   gap: 20px;
   padding: 20px;
   flex: 1;
@@ -95,10 +94,10 @@ body {
   background: var(--card-bg);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  padding: 16px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   box-shadow: var(--shadow);
 }
 
@@ -112,31 +111,118 @@ body {
   color: var(--accent); padding: 3px 8px; border-radius: 12px; font-weight: 600;
 }
 
-/* Grids e Tabelas PDV */
-.search-box input {
-  width: 100%; padding: 10px; border: 1px solid var(--border);
-  border-radius: 6px; font-size: 0.9rem; outline: none;
+/* Form de Pesquisa */
+.code-search-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 10px;
-  max-height: 380px;
-  overflow-y: auto;
+.code-search-box label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
-.prod-card {
-  background: var(--bg-main); border: 1px solid var(--border);
-  border-radius: 8px; padding: 12px; text-align: center;
-  cursor: pointer; transition: all 0.2s;
+.input-group {
+  display: flex;
+  gap: 8px;
 }
-.prod-card:hover { border-color: var(--accent); background: var(--accent-light); }
-.prod-card .name { font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px; }
-.prod-card .price { font-size: 0.9rem; font-weight: 700; color: var(--accent); }
 
+.input-group input {
+  flex: 1;
+  padding: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+}
+
+.input-group input:focus {
+  border-color: var(--accent);
+}
+
+/* Card do Último Produto */
+.last-product-card {
+  background: var(--bg-main);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.card-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.last-product-card h3 {
+  font-size: 1.1rem;
+  margin: 4px 0 8px 0;
+  color: var(--primary);
+}
+
+.product-details-grid {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.detail-title {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.detail-value {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.detail-value.highlight {
+  color: var(--success);
+}
+
+/* Caixa de Referência Rápida de Códigos */
+.quick-reference-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.quick-reference-box h3 {
+  font-size: 0.9rem;
+  color: var(--primary);
+}
+
+.mini-table {
+  max-height: 180px;
+}
+
+.tag-codigo {
+  background: #e2e8f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.clickable-row:hover {
+  background-color: var(--accent-light);
+}
+
+/* Tabelas e Resumo */
 .table-wrapper {
-  max-height: 220px; overflow-y: auto;
+  max-height: 280px; overflow-y: auto;
   border: 1px solid var(--border); border-radius: 6px;
 }
 
@@ -156,7 +242,7 @@ th { background: var(--bg-main); color: var(--text-muted); position: sticky; top
 
 .checkout-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-/* Botões Globais */
+/* Botões */
 .btn {
   padding: 8px 12px; border: none; border-radius: 6px;
   font-weight: 600; font-size: 0.85rem; cursor: pointer;
@@ -172,7 +258,7 @@ th { background: var(--bg-main); color: var(--text-muted); position: sticky; top
 .btn-sm { padding: 4px 8px; font-size: 0.75rem; }
 .btn-full { width: 100%; margin-top: 8px; }
 
-/* DRAWER LATERAL (SLAIDE CONFIGURAÇÕES) */
+/* Drawer Lateral */
 .drawer-overlay {
   display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(2px); z-index: 998;
@@ -192,9 +278,7 @@ th { background: var(--bg-main); color: var(--text-muted); position: sticky; top
 }
 .drawer-close { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
 
-.drawer-tabs {
-  display: flex; background: #f1f5f9; border-bottom: 1px solid var(--border);
-}
+.drawer-tabs { display: flex; background: #f1f5f9; border-bottom: 1px solid var(--border); }
 .tab-btn {
   flex: 1; padding: 10px 4px; border: none; background: none;
   font-size: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer;
@@ -205,7 +289,7 @@ th { background: var(--bg-main); color: var(--text-muted); position: sticky; top
 .tab-content { display: none; flex-direction: column; gap: 12px; }
 .tab-content.active { display: flex; }
 
-/* Formulários & Métricas no Drawer */
+/* Formulários & Métricas */
 .form-card { display: flex; flex-direction: column; gap: 10px; }
 .form-group { display: flex; flex-direction: column; gap: 4px; }
 .form-group label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
