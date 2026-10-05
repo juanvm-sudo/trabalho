@@ -23,27 +23,25 @@
       <div class="status-badge live"><span class="dot"></span> Caixa Aberto</div>
       <div id="relogio-sistema" class="clock-display">--:--:--</div>
       <button class="btn btn-config" onclick="toggleDrawer()">
-        ⚙️ Configurações & Gestão
+        Configurações & Gestão
       </button>
     </div>
   </header>
 
-  <!-- BANNER PROMO -->
   <div class="banner-container">
     <img src="juan_2.jpg" alt="Obrigado pela sua compra!" class="promo-banner">
   </div>
 
-  <!-- CONTEÚDO PRINCIPAL: FRENTE DE CAIXA -->
   <main class="main-pdv-container">
     
-    <!-- COLUNA ESQUERDA: BUSCA POR CÓDIGO E LISTA DE CÓDIGOS -->
+  
     <section class="pdv-section search-section">
       <div class="section-header">
-        <h2>🔍 Adicionar por Código</h2>
+        <h2>Adicionar por Código</h2>
         <span class="badge-tag">Leitor / Digitação</span>
       </div>
 
-      <!-- FORMULÁRIO DE PESQUISA -->
+      
       <form class="code-search-box" onsubmit="adicionarPorCodigoForm(event)">
         <label for="input-codigo">Digite ou bip o código do produto:</label>
         <div class="input-group">
@@ -52,7 +50,7 @@
         </div>
       </form>
 
-      <!-- PAINEL DE INFORMAÇÃO DO ÚLTIMO ITEM CONSULTADO -->
+    
       <div class="last-product-card" id="card-ultimo-produto">
         <span class="card-label">Último item consultado</span>
         <h3 id="info-prod-nome">Nenhum produto selecionado</h3>
@@ -70,7 +68,7 @@
 
       <!-- LISTA DE CÓDIGOS E PRODUTOS (PARA CONSULTA RÁPIDA) -->
       <div class="quick-reference-box">
-        <h3>📋 Lista de Códigos dos Produtos</h3>
+        <h3>Lista de Códigos dos Produtos</h3>
         <div class="table-wrapper mini-table">
           <table>
             <thead>
@@ -91,8 +89,8 @@
     <!-- COLUNA DIREITA: CARRINHO E CHECKOUT -->
     <section class="pdv-section cart-section">
       <div class="section-header">
-        <h2>🛒 Venda Atual</h2>
-        <button class="btn btn-sm btn-danger" onclick="limparCarrinho()">🗑 Limpar</button>
+        <h2>Venda Atual</h2>
+        <button class="btn btn-sm btn-danger" onclick="limparCarrinho()">Limpar</button>
       </div>
 
       <div class="table-wrapper cart-wrapper">
@@ -125,35 +123,34 @@
       </div>
 
       <div class="checkout-actions">
-        <button class="btn btn-success" onclick="abrirCheckout('Pix')">⚡ Pix</button>
-        <button class="btn btn-primary" onclick="abrirCheckout('Cartão')">💳 Cartão</button>
-        <button class="btn btn-secondary" onclick="abrirCheckout('Dinheiro')">💵 Dinheiro</button>
+        <button class="btn btn-success" onclick="abrirCheckout('Pix')">Pix</button>
+        <button class="btn btn-primary" onclick="abrirCheckout('Cartão')">Cartão</button>
+        <button class="btn btn-secondary" onclick="abrirCheckout('Dinheiro')">Dinheiro</button>
         <button class="btn btn-danger" onclick="limparCarrinho()">✕ Cancelar</button>
       </div>
     </section>
 
   </main>
 
-  <!-- OVERLAY E PAINEL LATERAL (DRAWER) -->
   <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
   
   <aside class="side-drawer" id="side-drawer">
     <div class="drawer-header">
-      <h2>⚙️ Central de Gestão</h2>
+      <h2>Central de Gestão</h2>
       <button class="drawer-close" onclick="toggleDrawer()">✕</button>
     </div>
 
-    <!-- NAVEGAÇÃO POR ABAS NO PAINEL LATERAL -->
+ 
     <nav class="drawer-tabs">
-      <button class="tab-btn active" onclick="mudarAba('tab-estoque', this)">📦 Estoque</button>
-      <button class="tab-btn" onclick="mudarAba('tab-cadastro', this)">➕ Novo Produto</button>
-      <button class="tab-btn" onclick="mudarAba('tab-financeiro', this)">📊 Financeiro</button>
-      <button class="tab-btn" onclick="mudarAba('tab-marketing', this)">📢 Marketing</button>
+      <button class="tab-btn active" onclick="mudarAba('tab-estoque', this)">Estoque</button>
+      <button class="tab-btn" onclick="mudarAba('tab-cadastro', this)">Novo Produto</button>
+      <button class="tab-btn" onclick="mudarAba('tab-financeiro', this)">Financeiro</button>
+      <button class="tab-btn" onclick="mudarAba('tab-marketing', this)">Marketing</button>
     </nav>
 
     <div class="drawer-body">
 
-      <!-- ABA 1: CONTROLE DE ESTOQUE -->
+
       <div id="tab-estoque" class="tab-content active">
         <h3>Consulta de Estoque</h3>
         
@@ -177,13 +174,11 @@
               </tr>
             </thead>
             <tbody id="tabela-estoque">
-              <!-- Renderizado via JS -->
+          
             </tbody>
           </table>
         </div>
       </div>
-
-      <!-- ABA 2: CADASTRO DE PRODUTO -->
       <div id="tab-cadastro" class="tab-content">
         <h3>Cadastrar Novo Item</h3>
         <form id="form-produto" class="form-card" onsubmit="adicionarNovoProduto(event)">
@@ -216,7 +211,7 @@
         <h3>Resumo das Vendas</h3>
         <div class="metrics-container">
           <div class="metric-card success-card">
-            <div class="metric-icon">💰</div>
+            <div class="metric-icon"></div>
             <div class="metric-info">
               <span class="metric-title">Faturamento Total</span>
               <span class="metric-value" id="faturamento-hoje">R$ 0.00</span>
@@ -224,7 +219,7 @@
           </div>
 
           <div class="metric-card info-card">
-            <div class="metric-icon">📈</div>
+            <div class="metric-icon"></div>
             <div class="metric-info">
               <span class="metric-title">Vendas Realizadas</span>
               <span class="metric-value" id="total-vendas-count">0 transações</span>
@@ -233,14 +228,13 @@
         </div>
       </div>
 
-      <!-- ABA 4: MARKETING / WHATSAPP -->
       <div id="tab-marketing" class="tab-content">
         <h3>Transmissão via WhatsApp</h3>
         <div class="whatsapp-card">
           <div class="whatsapp-preview" id="whatsapp-preview-box">
             <div class="wa-msg incoming">
               <span class="wa-author">Sistema</span>
-              <p>👋 Mensagem de promoção pronta!</p>
+              <p>Mensagem de promoção pronta!</p>
             </div>
           </div>
           <div class="wa-action-box">
@@ -253,7 +247,7 @@
     </div>
   </aside>
 
-  <!-- MODAL CHECKOUT -->
+ 
   <div class="modal-overlay" id="modal-checkout">
     <div class="modal-box">
       <button class="modal-close" onclick="fecharModal()">✕</button>
@@ -261,7 +255,7 @@
       <p id="modal-subtexto" class="modal-subtext"></p>
       
       <div class="checkout-display" id="modal-conteudo-dinamico">
-        <!-- Conteúdo do método de pagamento -->
+     
       </div>
 
       <div class="modal-footer">
