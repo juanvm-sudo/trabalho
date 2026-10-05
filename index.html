@@ -3,130 +3,235 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mercadinho de Esquina - Sistema do Caio</title>
+  <title>Mercadinho Express - Frente de Caixa</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <header>
-    <h1>🛒 Mercadinho Express <span>(Feito nas coxas mas funciona)</span></h1>
-    <div class="header-info" id="relogio-sistema">Carregando hora...</div>
+  <!-- NAVBAR SUPERIOR -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo-icon">🛒</div>
+      <div>
+        <h1>Mercadinho Express</h1>
+        <span class="subtitle">Frente de Caixa (PDV)</span>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <div class="status-badge live"><span class="dot"></span> Caixa Aberto</div>
+      <div id="relogio-sistema" class="clock-display">--:--:--</div>
+      <!-- BOTÃO DE ACESSO RÁPIDO PARA O PAINEL LATERAL -->
+      <button class="btn btn-config" onclick="toggleDrawer()">
+        ⚙️ Configurações & Gestão
+      </button>
+    </div>
   </header>
 
-  <div class="main-container">
-    <!-- COLUNA 1: CAIXA / PDV -->
-    <div class="panel">
-      <h2>Frente de Caixa</h2>
+  <!-- BANNER PROMO -->
+  <div class="banner-container">
+    <img src="juan_2.jpg" alt="Obrigado pela sua compra!" class="promo-banner">
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL: FRENTE DE CAIXA -->
+  <main class="main-pdv-container">
+    
+    <!-- COLUNA ESQUERDA: CATÁLOGO DE PRODUTOS -->
+    <section class="pdv-section catalog-section">
+      <div class="section-header">
+        <h2>⚡ Produtos</h2>
+        <span class="badge-tag">Clique para Adicionar</span>
+      </div>
 
       <div class="search-box">
-        <input type="text" id="input-busca" placeholder="Pesquisar produto ou código..." oninput="filtrarCatalogo()">
+        <input type="text" id="input-busca" placeholder="🔍 Buscar por nome ou código..." oninput="filtrarCatalogo()">
       </div>
 
       <div class="products-grid" id="grid-catalogo">
-        <!-- Produtos carregados via JS -->
+        <!-- Produtos injetados via JS -->
+      </div>
+    </section>
+
+    <!-- COLUNA DIREITA: CARRINHO E CHECKOUT -->
+    <section class="pdv-section cart-section">
+      <div class="section-header">
+        <h2>🛒 Venda Atual</h2>
+        <button class="btn btn-sm btn-danger" onclick="limparCarrinho()">🗑 Limpar</button>
       </div>
 
-      <h3>Carrinho de Compras</h3>
-      <div class="cart-table-container">
+      <div class="table-wrapper cart-wrapper">
         <table>
           <thead>
             <tr>
               <th>Item</th>
-              <th>Qtd</th>
-              <th>Preço</th>
-              <th>#</th>
+              <th class="text-center">Qtd</th>
+              <th class="text-right">Unit.</th>
+              <th class="text-right">Total</th>
+              <th class="text-center">#</th>
             </tr>
           </thead>
           <tbody id="lista-carrinho">
-            <tr><td colspan="4" style="text-align:center;">Carrinho tá vazio mano</td></tr>
+            <!-- Itens do carrinho -->
           </tbody>
         </table>
       </div>
 
-      <div class="cart-total-box">
-        <span>Total:</span>
-        <span class="cart-total">R$ <span id="txt-total">0.00</span></span>
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>R$ <span id="txt-subtotal">0.00</span></span>
+        </div>
+        <div class="summary-row total">
+          <span>Total a Pagar:</span>
+          <span class="highlight">R$ <span id="txt-total">0.00</span></span>
+        </div>
       </div>
 
       <div class="checkout-actions">
-        <button class="btn btn-pix" onclick="abrirCheckout('Pix')">Pix</button>
-        <button class="btn btn-money" onclick="abrirCheckout('Dinheiro')">Dinheiro</button>
-        <button class="btn btn-cancel" onclick="limparCarrinho()">Cancelar</button>
+        <button class="btn btn-success" onclick="abrirCheckout('Pix')">⚡ Pix</button>
+        <button class="btn btn-primary" onclick="abrirCheckout('Cartão')">💳 Cartão</button>
+        <button class="btn btn-secondary" onclick="abrirCheckout('Dinheiro')">💵 Dinheiro</button>
+        <button class="btn btn-danger" onclick="limparCarrinho()">✕ Cancelar</button>
       </div>
+    </section>
+
+  </main>
+
+  <!-- OVERLAY E PAINEL LATERAL (DRAWER) -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+  
+  <aside class="side-drawer" id="side-drawer">
+    <div class="drawer-header">
+      <h2>⚙️ Central de Gestão</h2>
+      <button class="drawer-close" onclick="toggleDrawer()">✕</button>
     </div>
 
-    <!-- COLUNA 2: ESTOQUE E NOVO PRODUTO -->
-    <div class="panel">
-      <h2>Estoque & Cadastro</h2>
+    <!-- NAVEGAÇÃO POR ABAS NO PAINEL LATERAL -->
+    <nav class="drawer-tabs">
+      <button class="tab-btn active" onclick="mudarAba('tab-estoque', this)">📦 Estoque</button>
+      <button class="tab-btn" onclick="mudarAba('tab-cadastro', this)">➕ Novo Produto</button>
+      <button class="tab-btn" onclick="mudarAba('tab-financeiro', this)">📊 Financeiro</button>
+      <button class="tab-btn" onclick="mudarAba('tab-marketing', this)">📢 Marketing</button>
+    </nav>
 
-      <form class="form-add-produto" onsubmit="adicionarNovoProduto(event)">
-        <div class="form-row">
-          <input type="text" id="cad-nome" placeholder="Nome do produto" required>
-          <input type="text" id="cad-codigo" placeholder="Código" required style="width: 90px;">
-        </div>
-        <div class="form-row">
-          <input type="number" step="0.01" id="cad-preco" placeholder="Preço (R$)" required>
-          <input type="number" id="cad-estoque" placeholder="Qtd" required style="width: 70px;">
-          <input type="date" id="cad-validade" required>
-        </div>
-        <button type="submit" class="btn btn-add">+ Cadastrar Produto</button>
-      </form>
+    <div class="drawer-body">
 
-      <div class="inventory-list">
-        <table>
-          <thead>
-            <tr>
-              <th>Produto</th>
-              <th>Qtd</th>
-              <th>Validade</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="tabela-estoque">
-            <!-- Gerado via JS -->
-          </tbody>
-        </table>
+      <!-- ABA 1: CONTROLE DE ESTOQUE -->
+      <div id="tab-estoque" class="tab-content active">
+        <h3>Consulta de Estoque</h3>
+        
+        <div class="metric-card alert-card">
+          <div class="metric-info">
+            <span class="metric-title">Itens Próximos ao Vencimento</span>
+            <span class="metric-value" id="qtd-vencimento">0 itens</span>
+          </div>
+          <button class="btn btn-warning btn-sm" onclick="gerarPromocaoRelampago()">Aplicar -25% Off</button>
+        </div>
+
+        <div class="table-wrapper drawer-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Cód.</th>
+                <th>Produto</th>
+                <th class="text-center">Qtd</th>
+                <th>Validade</th>
+                <th class="text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-estoque">
+              <!-- Renderizado via JS -->
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div class="metric-card alert">
-        <div>
-          <div class="metric-title">Produtos Quase Vencendo</div>
-          <div class="metric-value" id="qtd-vencimento">0 itens</div>
-        </div>
-        <button class="btn btn-cancel" style="font-size: 0.8rem;" onclick="gerarPromocaoRelampago()">Desconto Relâmpago (25%)</button>
+      <!-- ABA 2: CADASTRO DE PRODUTO -->
+      <div id="tab-cadastro" class="tab-content">
+        <h3>Cadastrar Novo Item</h3>
+        <form id="form-produto" class="form-card" onsubmit="adicionarNovoProduto(event)">
+          <div class="form-group">
+            <label>Nome do Produto</label>
+            <input type="text" id="cad-nome" placeholder="Ex: Pão de Queijo" required>
+          </div>
+          <div class="form-group">
+            <label>Código</label>
+            <input type="text" id="cad-codigo" placeholder="Ex: 105" required>
+          </div>
+          <div class="form-group">
+            <label>Preço (R$)</label>
+            <input type="number" step="0.01" id="cad-preco" placeholder="0.00" required>
+          </div>
+          <div class="form-group">
+            <label>Quantidade em Estoque</label>
+            <input type="number" id="cad-estoque" placeholder="0" required>
+          </div>
+          <div class="form-group">
+            <label>Data de Validade</label>
+            <input type="date" id="cad-validade" required>
+          </div>
+          <button type="submit" class="btn btn-accent btn-full">+ Cadastrar e Salvar</button>
+        </form>
       </div>
+
+      <!-- ABA 3: DASHBOARD FINANCEIRO -->
+      <div id="tab-financeiro" class="tab-content">
+        <h3>Resumo das Vendas</h3>
+        <div class="metrics-container">
+          <div class="metric-card success-card">
+            <div class="metric-icon">💰</div>
+            <div class="metric-info">
+              <span class="metric-title">Faturamento Total</span>
+              <span class="metric-value" id="faturamento-hoje">R$ 0.00</span>
+            </div>
+          </div>
+
+          <div class="metric-card info-card">
+            <div class="metric-icon">📈</div>
+            <div class="metric-info">
+              <span class="metric-title">Vendas Realizadas</span>
+              <span class="metric-value" id="total-vendas-count">0 transações</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 4: MARKETING / WHATSAPP -->
+      <div id="tab-marketing" class="tab-content">
+        <h3>Transmissão via WhatsApp</h3>
+        <div class="whatsapp-card">
+          <div class="whatsapp-preview" id="whatsapp-preview-box">
+            <div class="wa-msg incoming">
+              <span class="wa-author">Sistema</span>
+              <p>👋 Mensagem de promoção pronta!</p>
+            </div>
+          </div>
+          <div class="wa-action-box">
+            <input type="text" id="wa-input-custom" placeholder="Texto da promoção...">
+            <button class="btn btn-wa" onclick="enviarOfertaWhatsApp()">Disparar</button>
+          </div>
+        </div>
+      </div>
+
     </div>
+  </aside>
 
-    <!-- COLUNA 3: FINANCEIRO & MARKETING -->
-    <div class="panel">
-      <h2>Caixa & WhatsApp</h2>
-
-      <div class="metric-card">
-        <div>
-          <div class="metric-title">Faturamento Hoje</div>
-          <div class="metric-value" id="faturamento-hoje">R$ 0.00</div>
-        </div>
-      </div>
-
-      <h3>Disparo no WhatsApp do Bairro</h3>
-      <div class="whatsapp-preview" id="whatsapp-preview-box">
-        <div class="wa-msg">Salve galera do bairro! Pão quentinho e refri gelado na promoção hoje, brota! 🔥</div>
-      </div>
-
-      <button class="btn btn-primary" onclick="enviarOfertaWhatsApp()">Disparar Mensagem</button>
-    </div>
-  </div>
-
-  <!-- MODAL DE CHECKOUT -->
+  <!-- MODAL CHECKOUT -->
   <div class="modal-overlay" id="modal-checkout">
     <div class="modal-box">
-      <h3 id="modal-titulo">Pagamento</h3>
-      <p id="modal-subtexto"></p>
-      <div class="qr-placeholder" id="modal-conteudo-dinamico">
-        [ CARREGANDO... ]
+      <button class="modal-close" onclick="fecharModal()">✕</button>
+      <h3 id="modal-titulo">Finalizar Pagamento</h3>
+      <p id="modal-subtexto" class="modal-subtext"></p>
+      
+      <div class="checkout-display" id="modal-conteudo-dinamico">
+        <!-- Conteúdo do método de pagamento -->
       </div>
-      <button class="btn btn-primary" id="btn-confirmar-pagamento" onclick="concluirVenda()">Finalizar Venda</button>
-      <button class="btn btn-cancel" style="background:#888;" onclick="fecharModal()">Voltar</button>
+
+      <div class="modal-footer">
+        <button class="btn btn-success btn-full" onclick="concluirVenda()">Confirmar Recebimento</button>
+        <button class="btn btn-secondary btn-full" onclick="fecharModal()">Voltar</button>
+      </div>
     </div>
   </div>
 
