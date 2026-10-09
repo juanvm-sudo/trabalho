@@ -1,8 +1,19 @@
 let produtos = JSON.parse(localStorage.getItem('mercado_produtos')) || [
-  { id: 1, codigo: "101", nome: "Arroz Integral 1kg", preco: 7.50, estoque: 15, validade: "2027-01-10" },
-  { id: 2, codigo: "102", nome: "Feijão Preto 1kg", preco: 9.80, estoque: 12, validade: "2026-10-15" },
-  { id: 3, codigo: "103", nome: "Café Torrado 500g", preco: 18.90, estoque: 8, validade: "2026-10-08" },
-  { id: 4, codigo: "104", nome: "Leite Integral 1L", preco: 5.80, estoque: 2, validade: "2026-10-06" }
+  { id: 1, codigo: "98765432", nome: "Arroz Integral 1kg", preco: 7.50, estoque: 15, validade: "2027-01-10" },
+  { id: 2, codigo: "98765433", nome: "Feijão Preto 1kg", preco: 9.80, estoque: 12, validade: "2026-10-15" },
+  { id: 3, codigo: "98765434", nome: "Café Torrado 500g", preco: 18.90, estoque: 8, validade: "2026-10-08" },
+  { id: 4, codigo: "98765435", nome: "Leite Integral 1L", preco: 5.80, estoque: 2, validade: "2026-10-06" },
+  { id: 5, codigo: "98765436", nome: "Pão de Forma 500g", preco: 6.50, estoque: 20, validade: "2026-10-12" },
+  { id: 6, codigo: "98765437", nome: "Manteiga 200g", preco: 12.00, estoque: 5, validade: "2026-10-20" },
+  { id: 7, codigo: "98765438", nome: "Queijo Mussarela 500g", preco: 22.50, estoque: 10, validade: "2026-10-18" },
+  { id: 8, codigo: "98765439", nome: "Presunto Fatiado 200g", preco: 14.00, estoque: 7, validade: "2026-10-14" },
+  { id: 9, codigo: "98765440", nome: "Macarrão Espaguete 500g", preco: 4.50, estoque: 25, validade: "2027-02-01" },
+  { id: 10, codigo: "98765441", nome: "Molho de Tomate 340g", preco: 3.80, estoque: 30, validade: "2027-01-25" },
+  { id: 11, codigo: "98765442", nome: "Azeite de Oliva 500ml", preco: 25.00, estoque: 6, validade: "2027-03-10" },
+  { id: 12, codigo: "98765443", nome: "Sal Refinado 1kg", preco: 2.50, estoque: 18, validade: "2027-04-15" },
+  { id: 13, codigo: "98765444", nome: "Açúcar Cristal 1kg", preco: 3.20, estoque: 22, validade: "2027-05-20" },
+  { id: 14, codigo: "98765445", nome: "Farinha de Trigo 1kg", preco: 4.00, estoque: 16, validade: "2027-06-30" },
+  { id: 15, codigo: "98765446", nome: "Óleo de Soja 900ml", preco: 6.00, estoque: 14, validade: "2027-07-25" }
 ];
 
 let carrinho = [];
