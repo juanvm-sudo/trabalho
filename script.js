@@ -1,3 +1,10 @@
+// LISTA DE USUÁRIOS AUTORIZADOS
+let usuariosAutorizados = JSON.parse(localStorage.getItem('mercado_usuarios')) || [
+  { cpf: "111.111.111-11", senha: "6650", nome: "Gustavo" },
+  { cpf: "222.222.222-22", senha: "1570", nome: "Eduardo" },
+  { cpf: "333.333.333-33", senha: "1984", nome: "Juan" }
+];
+
 // BANCO DE DADOS INICIAL E GERADOR AUTOMÁTICO DE +1000 PRODUTOS
 let produtos = JSON.parse(localStorage.getItem('mercado_produtos')) || [];
 
@@ -63,6 +70,7 @@ function salvarDados() {
   localStorage.setItem('mercado_faturamento', faturamentoTotal.toString());
   localStorage.setItem('mercado_vendas_count', totalVendasCount.toString());
   localStorage.setItem('mercado_registro_vendas', JSON.stringify(registroVendasProdutos));
+  localStorage.setItem('mercado_usuarios', JSON.stringify(usuariosAutorizados));
 }
 
 // AUTENTICAÇÃO E LOGIN VIA CPF
@@ -76,16 +84,24 @@ function mascaraCPF(i) {
 
 function realizarLogin(e) {
   e.preventDefault();
-  const cpf = document.getElementById('login-cpf').value;
-  const senha = document.getElementById('login-senha').value;
+  const cpfDigitado = document.getElementById('login-cpf').value.trim();
+  const senhaDigitada = document.getElementById('login-senha').value.trim();
 
-  if (cpf.length >= 11 && senha) {
-    localStorage.setItem('mercado_login_ativo', cpf);
+  const usuarioEncontrado = usuariosAutorizados.find(
+    u => u.cpf === cpfDigitado && u.senha === senhaDigitada
+  );
+
+  if (usuarioEncontrado) {
+    document.getElementById('login-erro').style.display = 'none';
+    localStorage.setItem('mercado_login_ativo', usuarioEncontrado.nome);
+    
     document.getElementById('screen-login').style.display = 'none';
     document.getElementById('app-container').style.display = 'block';
-    document.getElementById('operador-nome').innerText = `Operador CPF: ${cpf}`;
+    document.getElementById('operador-nome').innerText = `Operador: ${usuarioEncontrado.nome}`;
   } else {
-    document.getElementById('login-erro').style.display = 'block';
+    const elementoErro = document.getElementById('login-erro');
+    elementoErro.innerText = "CPF ou senha incorretos!";
+    elementoErro.style.display = 'block';
   }
 }
 
@@ -94,13 +110,57 @@ function verificarEstadoLogin() {
   if (loginAtivo) {
     document.getElementById('screen-login').style.display = 'none';
     document.getElementById('app-container').style.display = 'block';
-    document.getElementById('operador-nome').innerText = `Operador CPF: ${loginAtivo}`;
+    document.getElementById('operador-nome').innerText = `Operador: ${loginAtivo}`;
   }
 }
 
 function realizarLogout() {
   localStorage.removeItem('mercado_login_ativo');
   location.reload();
+}
+
+// GESTÃO DE USUÁRIOS
+function cadastrarUsuario(e) {
+  e.preventDefault();
+  const nome = document.getElementById('cad-usr-nome').value.trim();
+  const cpf = document.getElementById('cad-usr-cpf').value.trim();
+  const senha = document.getElementById('cad-usr-senha').value.trim();
+
+  if (usuariosAutorizados.some(u => u.cpf === cpf)) {
+    return alert("Este CPF já está cadastrado!");
+  }
+
+  usuariosAutorizados.push({ cpf, senha, nome });
+  salvarDados();
+  renderizarTabelaUsuarios();
+  e.target.reset();
+  alert("Usuário cadastrado com sucesso!");
+}
+
+function removerUsuario(cpf) {
+  if (confirm("Deseja remover este usuário?")) {
+    usuariosAutorizados = usuariosAutorizados.filter(u => u.cpf !== cpf);
+    salvarDados();
+    renderizarTabelaUsuarios();
+  }
+}
+
+function renderizarTabelaUsuarios() {
+  const tbody = document.getElementById('tabela-usuarios');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  usuariosAutorizados.forEach(u => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${u.nome}</td>
+        <td>${u.cpf}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-danger" onclick="removerUsuario('${u.cpf}')">✕</button>
+        </td>
+      </tr>
+    `;
+  });
 }
 
 // RELÓGIO E TEMPO REAL
@@ -173,7 +233,6 @@ function renderizarListaCodigos(filtroNome = "") {
     return;
   }
 
-  // Exibe os primeiros 50 itens para rápida performance
   prodsFiltrados.slice(0, 50).forEach(p => {
     tbody.innerHTML += `
       <tr class="clickable-row" onclick="preencherEPesquisar('${p.codigo}')" title="Clique para adicionar">
@@ -216,7 +275,6 @@ function adicionarPorCodigoForm(e) {
     return;
   }
 
-  // Atualiza painel do último produto
   document.getElementById('info-prod-nome').innerText = produto.nome;
   document.getElementById('info-prod-codigo').innerText = produto.codigo;
   document.getElementById('info-prod-categoria').innerText = produto.categoria;
@@ -353,7 +411,6 @@ function concluirVenda() {
     const p = produtos.find(p => p.id === itemCart.id);
     if (p) p.estoque -= itemCart.qtd;
 
-    // Atualiza registro de saídas
     registroVendasProdutos[itemCart.nome] = (registroVendasProdutos[itemCart.nome] || 0) + itemCart.qtd;
   });
 
@@ -366,7 +423,7 @@ function concluirVenda() {
   alert("Venda concluída com sucesso!");
 }
 
-// RELATÓRIOS DE VENDAS (MAIS E MENOS VENDIDOS)
+// RELATÓRIOS DE VENDAS
 function renderizarRelatoriosVendas() {
   const tbodyMais = document.getElementById('tabela-mais-vendidos');
   const tbodyMenos = document.getElementById('tabela-menos-vendidos');
@@ -463,6 +520,7 @@ function renderizarTudo() {
   renderizarCarrinho();
   atualizarMetricas();
   renderizarRelatoriosVendas();
+  renderizarTabelaUsuarios();
   salvarDados();
 }
 
@@ -497,16 +555,13 @@ function moverJogador(e) {
 function atualizarJogo() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Desenha Jogador (Carrinho)
   ctx.fillStyle = '#0f766e';
   ctx.fillRect(player.x, player.y, player.width, player.height);
 
-  // Spawna itens
   if (Math.random() < 0.1) {
     items.push({ x: Math.random() * (canvas.width - 20), y: 0, speed: Math.random() * 3 + 2 });
   }
 
-  // Atualiza e desenha itens
   for (let i = 0; i < items.length; i++) {
     let item = items[i];
     item.y += item.speed;
@@ -516,7 +571,6 @@ function atualizarJogo() {
     ctx.arc(item.x, item.y, 8, 0, Math.PI * 2);
     ctx.fill();
 
-    // Colisão
     if (
       item.y >= player.y &&
       item.x >= player.x &&

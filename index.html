@@ -27,7 +27,7 @@
         </div>
         <button type="submit" class="btn btn-accent btn-full">Entrar no Sistema</button>
       </form>
-      <div id="login-erro" class="login-error-msg" style="display:none;">CPF ou senha inválidos!</div>
+      <div id="login-erro" class="login-error-msg" style="display:none;">CPF ou senha incorretos!</div>
     </div>
   </div>
 
@@ -40,7 +40,7 @@
         <div class="logo-icon">🛒</div>
         <div>
           <h1>Mercadinho Express</h1>
-          <span class="subtitle" id="operador-nome">Operador: CPF Logado</span>
+          <span class="subtitle" id="operador-nome">Operador: ---</span>
         </div>
       </div>
 
@@ -183,7 +183,8 @@
     <nav class="drawer-tabs">
       <button class="tab-btn active" onclick="mudarAba('tab-estoque', this)">Estoque</button>
       <button class="tab-btn" onclick="mudarAba('tab-cadastro', this)">Novo Produto</button>
-      <button class="tab-btn" onclick="mudarAba('tab-financeiro', this)">Financeiro / Relatórios</button>
+      <button class="tab-btn" onclick="mudarAba('tab-usuarios', this)">Usuários</button>
+      <button class="tab-btn" onclick="mudarAba('tab-financeiro', this)">Relatórios</button>
       <button class="tab-btn" onclick="mudarAba('tab-marketing', this)">WhatsApp</button>
       <button class="tab-btn" onclick="mudarAba('tab-estetica', this)">Aparência</button>
       <button class="tab-btn" onclick="mudarAba('tab-jogo', this)">🎮 Jogo 2D</button>
@@ -258,6 +259,42 @@
           </div>
           <button type="submit" class="btn btn-accent btn-full">+ Cadastrar e Salvar</button>
         </form>
+      </div>
+
+      <!-- ABA GERENCIAMENTO DE USUÁRIOS -->
+      <div id="tab-usuarios" class="tab-content">
+        <h3>Cadastrar Operador / Usuário</h3>
+        <form class="form-card" onsubmit="cadastrarUsuario(event)">
+          <div class="form-group">
+            <label>Nome do Operador</label>
+            <input type="text" id="cad-usr-nome" placeholder="Ex: João da Silva" required>
+          </div>
+          <div class="form-group">
+            <label>CPF</label>
+            <input type="text" id="cad-usr-cpf" placeholder="000.000.000-00" maxlength="14" required oninput="mascaraCPF(this)">
+          </div>
+          <div class="form-group">
+            <label>Senha de Acesso</label>
+            <input type="password" id="cad-usr-senha" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-accent btn-full">+ Adicionar Usuário</button>
+        </form>
+
+        <h4 style="margin-top: 15px;">👤 Usuários Cadastrados</h4>
+        <div class="table-wrapper mini-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th class="text-center">#</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-usuarios">
+              <!-- JS -->
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- ABA DASHBOARD FINANCEIRO E VERIFICAÇÃO DE VENDAS -->
