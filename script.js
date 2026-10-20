@@ -1,36 +1,109 @@
-let produtos = JSON.parse(localStorage.getItem('mercado_produtos')) || [
-  { id: 1, codigo: "98765432", nome: "Arroz Integral 1kg", preco: 7.50, estoque: 15, validade: "2027-01-10" },
-  { id: 2, codigo: "98765433", nome: "Feijão Preto 1kg", preco: 9.80, estoque: 12, validade: "2026-10-15" },
-  { id: 3, codigo: "98765434", nome: "Café Torrado 500g", preco: 18.90, estoque: 8, validade: "2026-10-08" },
-  { id: 4, codigo: "98765435", nome: "Leite Integral 1L", preco: 5.80, estoque: 2, validade: "2026-10-06" },
-  { id: 5, codigo: "98765436", nome: "Pão de Forma 500g", preco: 6.50, estoque: 20, validade: "2026-10-12" },
-  { id: 6, codigo: "98765437", nome: "Manteiga 200g", preco: 12.00, estoque: 5, validade: "2026-10-20" },
-  { id: 7, codigo: "98765438", nome: "Queijo Mussarela 500g", preco: 22.50, estoque: 10, validade: "2026-10-18" },
-  { id: 8, codigo: "98765439", nome: "Presunto Fatiado 200g", preco: 14.00, estoque: 7, validade: "2026-10-14" },
-  { id: 9, codigo: "98765440", nome: "Macarrão Espaguete 500g", preco: 4.50, estoque: 25, validade: "2027-02-01" },
-  { id: 10, codigo: "98765441", nome: "Molho de Tomate 340g", preco: 3.80, estoque: 30, validade: "2027-01-25" },
-  { id: 11, codigo: "98765442", nome: "Azeite de Oliva 500ml", preco: 25.00, estoque: 6, validade: "2027-03-10" },
-  { id: 12, codigo: "98765443", nome: "Sal Refinado 1kg", preco: 2.50, estoque: 18, validade: "2027-04-15" },
-  { id: 13, codigo: "98765444", nome: "Açúcar Cristal 1kg", preco: 3.20, estoque: 22, validade: "2027-05-20" },
-  { id: 14, codigo: "98765445", nome: "Farinha de Trigo 1kg", preco: 4.00, estoque: 16, validade: "2027-06-30" },
-  { id: 15, codigo: "98765446", nome: "Óleo de Soja 900ml", preco: 6.00, estoque: 14, validade: "2027-07-25" }
-];
+// BANCO DE DADOS INICIAL E GERADOR AUTOMÁTICO DE +1000 PRODUTOS
+let produtos = JSON.parse(localStorage.getItem('mercado_produtos')) || [];
+
+if (produtos.length < 1000) {
+  produtos = gerarMaisDe1000Produtos();
+  salvarDados();
+}
 
 let carrinho = [];
 let faturamentoTotal = parseFloat(localStorage.getItem('mercado_faturamento')) || 0;
 let totalVendasCount = parseInt(localStorage.getItem('mercado_vendas_count')) || 0;
+let registroVendasProdutos = JSON.parse(localStorage.getItem('mercado_registro_vendas')) || {};
+let departamentoAtual = 'todos';
 
 document.addEventListener("DOMContentLoaded", () => {
+  verificarEstadoLogin();
+  carregarPreferenciasEstetica();
   iniciarRelogio();
   renderizarTudo();
 });
 
+// FUNÇÃO GERADORA DE +1000 PRODUTOS COM CATEGORIAS
+function gerarMaisDe1000Produtos() {
+  const categorias = ["Mercearia", "Açougue", "Padaria", "Hortifruti", "Bebidas", "Limpeza"];
+  const nomesBase = {
+    "Açougue": ["Carne Moída", "Picanha", "Contra Filé", "Alcatra", "Costela", "Frango Inteiro", "Linguica Toscana", "Bisteca Suína", "Coxão Mole", "Cupim"],
+    "Padaria": ["Pão Francês", "Pão de Queijo", "Bolo de Fubá", "Torta de Frango", "Croissant", "Sonho de Creme", "Pão de Forma", "Broa de Milho", "Cuca de Goiabada", "Pão Doce"],
+    "Hortifruti": ["Maçã Fuji", "Banana Prata", "Tomate Débora", "Cebola", "Batata Monalisa", "Alface Crespa", "Laranja Pera", "Cenoura", "Melancia", "Abacaxi"],
+    "Bebidas": ["Refrigerante Cola 2L", "Suco de Laranja 1L", "Água Mineral 500ml", "Cerveja Pilsen 350ml", "Vinho Tinto 750ml", "Energético 250ml", "Chá Gelado 1.5L"],
+    "Mercearia": ["Arroz 5kg", "Feijão Carioca 1kg", "Açúcar 1kg", "Café 500g", "Macarrão 500g", "Óleo 900ml", "Azeite 500ml", "Farofa Pronta", "Sal 1kg"],
+    "Limpeza": ["Detergente 500ml", "Sabão em Pó 1kg", "Amaciante 2L", "Desinfetante 1L", "Papel Higiênico 12un", "Esponja de Aço"]
+  };
+
+  let prods = [];
+  let idContador = 1000;
+
+  categorias.forEach(cat => {
+    const listaNomes = nomesBase[cat];
+    for (let i = 1; i <= 170; i++) {
+      idContador++;
+      const nomeProd = `${listaNomes[i % listaNomes.length]} Premium v${i}`;
+      const precoProd = parseFloat((Math.random() * 45 + 2).toFixed(2));
+      const estoqueProd = Math.floor(Math.random() * 80) + 5;
+      
+      prods.push({
+        id: idContador,
+        codigo: idContador.toString(),
+        nome: nomeProd,
+        categoria: cat,
+        preco: precoProd,
+        estoque: estoqueProd,
+        validade: "2027-12-31"
+      });
+    }
+  });
+
+  return prods;
+}
+
+// PERSISTÊNCIA NO LOCALSTORAGE
 function salvarDados() {
   localStorage.setItem('mercado_produtos', JSON.stringify(produtos));
   localStorage.setItem('mercado_faturamento', faturamentoTotal.toString());
   localStorage.setItem('mercado_vendas_count', totalVendasCount.toString());
+  localStorage.setItem('mercado_registro_vendas', JSON.stringify(registroVendasProdutos));
 }
 
+// AUTENTICAÇÃO E LOGIN VIA CPF
+function mascaraCPF(i) {
+  let v = i.value.replace(/\D/g, "");
+  v = v.replace(/(\d{3})(\d)/, "$1.$2");
+  v = v.replace(/(\d{3})(\d)/, "$1.$2");
+  v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  i.value = v;
+}
+
+function realizarLogin(e) {
+  e.preventDefault();
+  const cpf = document.getElementById('login-cpf').value;
+  const senha = document.getElementById('login-senha').value;
+
+  if (cpf.length >= 11 && senha) {
+    localStorage.setItem('mercado_login_ativo', cpf);
+    document.getElementById('screen-login').style.display = 'none';
+    document.getElementById('app-container').style.display = 'block';
+    document.getElementById('operador-nome').innerText = `Operador CPF: ${cpf}`;
+  } else {
+    document.getElementById('login-erro').style.display = 'block';
+  }
+}
+
+function verificarEstadoLogin() {
+  const loginAtivo = localStorage.getItem('mercado_login_ativo');
+  if (loginAtivo) {
+    document.getElementById('screen-login').style.display = 'none';
+    document.getElementById('app-container').style.display = 'block';
+    document.getElementById('operador-nome').innerText = `Operador CPF: ${loginAtivo}`;
+  }
+}
+
+function realizarLogout() {
+  localStorage.removeItem('mercado_login_ativo');
+  location.reload();
+}
+
+// RELÓGIO E TEMPO REAL
 function iniciarRelogio() {
   setInterval(() => {
     const agora = new Date();
@@ -39,59 +112,90 @@ function iniciarRelogio() {
   }, 1000);
 }
 
-// TOGGLE DRAWER
-function toggleDrawer() {
-  const drawer = document.getElementById('side-drawer');
-  const overlay = document.getElementById('drawer-overlay');
-  drawer.classList.toggle('open');
-  overlay.classList.toggle('active');
+// PERSONALIZAÇÃO ESTÉTICA (MODO ESCURO & FONTE)
+function alterarTema(tema) {
+  document.documentElement.setAttribute('data-theme', tema);
+  localStorage.setItem('mercado_tema', tema);
 }
 
-function mudarAba(abaId, btn) {
-  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  
-  document.getElementById(abaId).classList.add('active');
-  btn.classList.add('active');
+function alterarTamanhoFonte(tamanho) {
+  document.documentElement.setAttribute('data-font', tamanho);
+  localStorage.setItem('mercado_fonte', tamanho);
 }
 
-function renderizarTudo() {
+function carregarPreferenciasEstetica() {
+  const temaSalvo = localStorage.getItem('mercado_tema') || 'light';
+  const fonteSalva = localStorage.getItem('mercado_fonte') || 'normal';
+  alterarTema(temaSalvo);
+  alterarTamanhoFonte(fonteSalva);
+
+  document.getElementById('select-tema').value = temaSalvo;
+  document.getElementById('select-fonte').value = fonteSalva;
+}
+
+// FILTRAGEM POR SEÇÃO/DEPARTAMENTO
+function filtrarDepartamento(dept, btn) {
+  departamentoAtual = dept;
+  document.querySelectorAll('.dept-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const tag = document.getElementById('tag-categoria-atual');
+  const titulo = document.getElementById('titulo-secao-atual');
+
+  if (dept === 'todos') {
+    tag.innerText = "Todos os Itens";
+    titulo.innerText = "Adicionar por Código";
+  } else {
+    tag.innerText = `Seção: ${dept.toUpperCase()}`;
+    titulo.innerText = `Produtos - ${dept.charAt(0).toUpperCase() + dept.slice(1)}`;
+  }
+
   renderizarListaCodigos();
-  renderizarEstoque();
-  renderizarCarrinho();
-  verificarAlertasValidade();
-  atualizarMetricas();
-  salvarDados();
 }
 
-// RENDERIZA A LISTA VISÍVEL DE CÓDIGOS E PRODUTOS NA FRENTE DO CAIXA
-function renderizarListaCodigos() {
+// RENDERIZAÇÃO DA TABELA DE CONSULTA DE CÓDIGOS
+function renderizarListaCodigos(filtroNome = "") {
   const tbody = document.getElementById('lista-codigos-produtos');
   tbody.innerHTML = '';
 
-  if (produtos.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="3" class="text-center">Nenhum produto cadastrado</td></tr>';
+  let prodsFiltrados = produtos;
+  
+  if (departamentoAtual !== 'todos') {
+    prodsFiltrados = prodsFiltrados.filter(p => p.categoria.toLowerCase() === departamentoAtual.toLowerCase());
+  }
+
+  if (filtroNome) {
+    prodsFiltrados = prodsFiltrados.filter(p => p.nome.toLowerCase().includes(filtroNome.toLowerCase()));
+  }
+
+  if (prodsFiltrados.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Nenhum produto encontrado</td></tr>';
     return;
   }
 
-  produtos.forEach(p => {
+  // Exibe os primeiros 50 itens para rápida performance
+  prodsFiltrados.slice(0, 50).forEach(p => {
     tbody.innerHTML += `
       <tr class="clickable-row" onclick="preencherEPesquisar('${p.codigo}')" title="Clique para adicionar">
         <td><span class="tag-codigo">${p.codigo}</span></td>
         <td>${p.nome}</td>
+        <td><small>${p.categoria}</small></td>
         <td class="text-right">R$ ${p.preco.toFixed(2)}</td>
       </tr>
     `;
   });
 }
 
+function filtrarTabelaConsulta(val) {
+  renderizarListaCodigos(val);
+}
+
 function preencherEPesquisar(codigo) {
-  const input = document.getElementById('input-codigo');
-  input.value = codigo;
+  document.getElementById('input-codigo').value = codigo;
   adicionarPorCodigoForm(new Event('submit'));
 }
 
-// ADICIONAR PRODUTO PELO CÓDIGO (LEITOR / ENTER)
+// ADICIONAR AO CARRINHO
 function adicionarPorCodigoForm(e) {
   if (e) e.preventDefault();
   const input = document.getElementById('input-codigo');
@@ -109,21 +213,19 @@ function adicionarPorCodigoForm(e) {
 
   if (produto.estoque <= 0) {
     alert("Produto esgotado no estoque!");
-    input.select();
     return;
   }
 
-  // Atualiza card visual do último produto
+  // Atualiza painel do último produto
   document.getElementById('info-prod-nome').innerText = produto.nome;
   document.getElementById('info-prod-codigo').innerText = produto.codigo;
+  document.getElementById('info-prod-categoria').innerText = produto.categoria;
   document.getElementById('info-prod-preco').innerText = `R$ ${produto.preco.toFixed(2)}`;
 
-  // Adiciona ao carrinho
   const itemCart = carrinho.find(item => item.id === produto.id);
   if (itemCart) {
     if (itemCart.qtd >= produto.estoque) {
-      alert("Quantidade máxima disponível em estoque atingida!");
-      input.select();
+      alert("Quantidade máxima em estoque atingida!");
       return;
     }
     itemCart.qtd++;
@@ -137,14 +239,14 @@ function adicionarPorCodigoForm(e) {
 }
 
 function alterarQtdCarrinho(id, delta) {
-  const itemCart = carrinho.find(item => item.id === id);
-  const prod = produtos.find(item => item.id === id);
+  const itemCart = carrinho.find(i => i.id === id);
+  const prod = produtos.find(i => i.id === id);
 
   if (itemCart) {
     itemCart.qtd += delta;
     if (itemCart.qtd > prod.estoque) {
       itemCart.qtd = prod.estoque;
-      alert("Estoque insuficiente.");
+      alert("Estoque máximo atingido.");
     }
     if (itemCart.qtd <= 0) return removerDoCarrinho(id);
   }
@@ -168,7 +270,7 @@ function renderizarCarrinho() {
   tbody.innerHTML = '';
 
   if (carrinho.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">Carrinho vazio</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="color:var(--text-muted)">Carrinho vazio</td></tr>';
     txtTotal.innerText = '0.00';
     txtSubtotal.innerText = '0.00';
     return;
@@ -200,85 +302,44 @@ function renderizarCarrinho() {
   txtTotal.innerText = total.toFixed(2);
 }
 
-// DRAWER: Cadastro
-function adicionarNovoProduto(e) {
-  e.preventDefault();
-  const novo = {
-    id: Date.now(),
-    codigo: document.getElementById('cad-codigo').value,
-    nome: document.getElementById('cad-nome').value,
-    preco: parseFloat(document.getElementById('cad-preco').value),
-    estoque: parseInt(document.getElementById('cad-estoque').value),
-    validade: document.getElementById('cad-validade').value
-  };
-
-  produtos.push(novo);
-  renderizarTudo();
-  e.target.reset();
-  alert("Produto cadastrado com sucesso!");
-}
-
-// DRAWER: Estoque
-function renderizarEstoque() {
-  const tabela = document.getElementById('tabela-estoque');
-  tabela.innerHTML = '';
-
-  produtos.forEach(p => {
-    let status = '<span class="badge-status status-ok">OK</span>';
-    const diffDias = calcularDiferencaDias(p.validade);
-
-    if (p.estoque <= 3) status = '<span class="badge-status status-warn">Baixo</span>';
-    if (diffDias <= 5) status = '<span class="badge-status status-danger">Vencendo</span>';
-
-    tabela.innerHTML += `
-      <tr>
-        <td>${p.codigo}</td>
-        <td>${p.nome}</td>
-        <td class="text-center">${p.estoque} un</td>
-        <td>${p.validade.split('-').reverse().join('/')}</td>
-        <td class="text-center">${status}</td>
-      </tr>
-    `;
-  });
-}
-
-function calcularDiferencaDias(dataString) {
-  const dataValidade = new Date(dataString);
-  const hoje = new Date();
-  return Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
-}
-
-function verificarAlertasValidade() {
-  const vencendo = produtos.filter(p => calcularDiferencaDias(p.validade) <= 5);
-  document.getElementById('qtd-vencimento').innerText = `${vencendo.length} itens`;
-}
-
-function gerarPromocaoRelampago() {
-  let aplicados = 0;
-  produtos.forEach(p => {
-    if (calcularDiferencaDias(p.validade) <= 5) {
-      p.preco = parseFloat((p.preco * 0.75).toFixed(2));
-      aplicados++;
-    }
-  });
-
-  renderizarTudo();
-  alert(`Desconto de 25% aplicado em ${aplicados} produto(s)!`);
-}
-
-// Modal Checkout & Métricas
+// CHECKOUT & CÁLCULO DE TROCO DINÂMICO
 function abrirCheckout(tipo) {
   if (carrinho.length === 0) return alert("Carrinho vazio!");
 
   const total = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
   document.getElementById('modal-checkout').style.display = 'flex';
   document.getElementById('modal-titulo').innerText = `Pagamento via ${tipo}`;
-  document.getElementById('modal-subtexto').innerText = `Total: R$ ${total.toFixed(2)}`;
+  document.getElementById('modal-subtexto').innerText = `Total a Pagar: R$ ${total.toFixed(2)}`;
   
   const display = document.getElementById('modal-conteudo-dinamico');
-  if (tipo === 'Pix') display.innerHTML = '📱 <strong>Chave Pix Copia e Cola:</strong><br><small>00020126360014BR.GOV.BCB.PIX...</small>';
-  else if (tipo === 'Cartão') display.innerHTML = '💳 <strong>Aproxime ou insira o cartão</strong>';
-  else display.innerHTML = '💵 <strong>Receba o valor e dê o troco</strong>';
+
+  if (tipo === 'Dinheiro') {
+    display.innerHTML = `
+      <div class="form-group" style="text-align:left;">
+        <label>Valor Recebido (R$):</label>
+        <input type="number" step="0.01" id="valor-pago-dinheiro" placeholder="0.00" oninput="calcularTroco(${total})" autofocus>
+      </div>
+      <div style="margin-top:10px; font-weight:bold; font-size:1.1rem;" id="box-troco">
+        Troco: R$ 0.00
+      </div>
+    `;
+  } else if (tipo === 'Pix') {
+    display.innerHTML = '📱 <strong>Chave Pix Copia e Cola:</strong><br><small>00020126360014BR.GOV.BCB.PIX...</small>';
+  } else {
+    display.innerHTML = '💳 <strong>Insira ou aproxime o cartão na maquininha</strong>';
+  }
+}
+
+function calcularTroco(total) {
+  const pago = parseFloat(document.getElementById('valor-pago-dinheiro').value) || 0;
+  const troco = pago - total;
+  const box = document.getElementById('box-troco');
+
+  if (troco < 0) {
+    box.innerHTML = `<span style="color:var(--danger)">Faltam: R$ ${Math.abs(troco).toFixed(2)}</span>`;
+  } else {
+    box.innerHTML = `<span style="color:var(--success)">Troco: R$ ${troco.toFixed(2)}</span>`;
+  }
 }
 
 function fecharModal() {
@@ -287,10 +348,13 @@ function fecharModal() {
 
 function concluirVenda() {
   const total = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
-  
+
   carrinho.forEach(itemCart => {
     const p = produtos.find(p => p.id === itemCart.id);
     if (p) p.estoque -= itemCart.qtd;
+
+    // Atualiza registro de saídas
+    registroVendasProdutos[itemCart.nome] = (registroVendasProdutos[itemCart.nome] || 0) + itemCart.qtd;
   });
 
   faturamentoTotal += total;
@@ -302,23 +366,170 @@ function concluirVenda() {
   alert("Venda concluída com sucesso!");
 }
 
+// RELATÓRIOS DE VENDAS (MAIS E MENOS VENDIDOS)
+function renderizarRelatoriosVendas() {
+  const tbodyMais = document.getElementById('tabela-mais-vendidos');
+  const tbodyMenos = document.getElementById('tabela-menos-vendidos');
+
+  tbodyMais.innerHTML = '';
+  tbodyMenos.innerHTML = '';
+
+  const listaOrdenada = Object.keys(registroVendasProdutos).map(nome => ({
+    nome,
+    qtd: registroVendasProdutos[nome]
+  })).sort((a, b) => b.qtd - a.qtd);
+
+  if (listaOrdenada.length === 0) {
+    tbodyMais.innerHTML = '<tr><td colspan="2" class="text-center">Nenhuma venda gravada</td></tr>';
+  } else {
+    listaOrdenada.slice(0, 5).forEach(item => {
+      tbodyMais.innerHTML += `<tr><td>${item.nome}</td><td class="text-center">${item.qtd} un</td></tr>`;
+    });
+  }
+
+  const produtosSemSaida = produtos.filter(p => !registroVendasProdutos[p.nome]).slice(0, 5);
+  produtosSemSaida.forEach(item => {
+    tbodyMenos.innerHTML += `<tr><td>${item.nome}</td><td class="text-center">0 un</td></tr>`;
+  });
+}
+
+// INTEGRALIZAÇÃO REAL DE WHATSAPP
+function enviarWhatsAppReal() {
+  const num = document.getElementById('wa-numero').value.replace(/\D/g, "");
+  const msg = encodeURIComponent(document.getElementById('wa-mensagem').value || "Confira nossas ofertas!");
+
+  if (!num) return alert("Digite um número com DDD válido!");
+
+  window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
+}
+
+// DRAWER & TAB NAVIGATION
+function toggleDrawer() {
+  const drawer = document.getElementById('side-drawer');
+  const overlay = document.getElementById('drawer-overlay');
+  drawer.classList.toggle('open');
+  overlay.classList.toggle('active');
+}
+
+function mudarAba(abaId, btn) {
+  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+  document.getElementById(abaId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function renderizarEstoque() {
+  const tabela = document.getElementById('tabela-estoque');
+  tabela.innerHTML = '';
+
+  produtos.slice(0, 50).forEach(p => {
+    let status = '<span class="badge-status status-ok">OK</span>';
+    if (p.estoque <= 5) status = '<span class="badge-status status-warn">Baixo</span>';
+
+    tabela.innerHTML += `
+      <tr>
+        <td>${p.codigo}</td>
+        <td>${p.nome}</td>
+        <td class="text-center">${p.estoque} un</td>
+        <td>31/12/2027</td>
+        <td class="text-center">${status}</td>
+      </tr>
+    `;
+  });
+}
+
+function adicionarNovoProduto(e) {
+  e.preventDefault();
+  const novo = {
+    id: Date.now(),
+    codigo: document.getElementById('cad-codigo').value,
+    nome: document.getElementById('cad-nome').value,
+    categoria: document.getElementById('cad-categoria').value,
+    preco: parseFloat(document.getElementById('cad-preco').value),
+    estoque: parseInt(document.getElementById('cad-estoque').value),
+    validade: document.getElementById('cad-validade').value
+  };
+
+  produtos.unshift(novo);
+  renderizarTudo();
+  e.target.reset();
+  alert("Produto adicionado com sucesso!");
+}
+
+function renderizarTudo() {
+  renderizarListaCodigos();
+  renderizarEstoque();
+  renderizarCarrinho();
+  atualizarMetricas();
+  renderizarRelatoriosVendas();
+  salvarDados();
+}
+
 function atualizarMetricas() {
   document.getElementById('faturamento-hoje').innerText = `R$ ${faturamentoTotal.toFixed(2)}`;
   document.getElementById('total-vendas-count').innerText = `${totalVendasCount} transações`;
 }
 
-function enviarOfertaWhatsApp() {
-  const input = document.getElementById('wa-input-custom');
-  const box = document.getElementById('whatsapp-preview-box');
-  const mensagem = input.value.trim() || "🔥 Promoção especial no Mercadinho!";
+// MINI JOGO 2D NO CANVAS
+let canvas, ctx, gameLoop, player, items, score;
 
-  box.innerHTML += `
-    <div class="wa-msg outgoing">
-      <span class="wa-author">Você</span>
-      <p>${mensagem}</p>
-    </div>
-  `;
+function iniciarJogo() {
+  canvas = document.getElementById('gameCanvas');
+  ctx = canvas.getContext('2d');
   
-  input.value = '';
-  box.scrollTop = box.scrollHeight;
+  score = 0;
+  player = { x: 140, y: 260, width: 60, height: 20, speed: 7 };
+  items = [];
+
+  document.removeEventListener('keydown', moverJogador);
+  document.addEventListener('keydown', moverJogador);
+
+  if (gameLoop) clearInterval(gameLoop);
+  gameLoop = setInterval(atualizarJogo, 1000 / 30);
+}
+
+function moverJogador(e) {
+  if (e.key === 'ArrowLeft' || e.key === 'a') player.x = Math.max(0, player.x - player.speed * 2);
+  if (e.key === 'ArrowRight' || e.key === 'd') player.x = Math.min(canvas.width - player.width, player.x + player.speed * 2);
+}
+
+function atualizarJogo() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Desenha Jogador (Carrinho)
+  ctx.fillStyle = '#0f766e';
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+
+  // Spawna itens
+  if (Math.random() < 0.1) {
+    items.push({ x: Math.random() * (canvas.width - 20), y: 0, speed: Math.random() * 3 + 2 });
+  }
+
+  // Atualiza e desenha itens
+  for (let i = 0; i < items.length; i++) {
+    let item = items[i];
+    item.y += item.speed;
+
+    ctx.fillStyle = '#d97706';
+    ctx.beginPath();
+    ctx.arc(item.x, item.y, 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Colisão
+    if (
+      item.y >= player.y &&
+      item.x >= player.x &&
+      item.x <= player.x + player.width
+    ) {
+      score += 10;
+      items.splice(i, 1);
+      i--;
+    } else if (item.y > canvas.height) {
+      items.splice(i, 1);
+      i--;
+    }
+  }
+
+  document.getElementById('game-score').innerText = `Pontos: ${score}`;
 }
