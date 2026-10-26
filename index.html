@@ -9,8 +9,9 @@
 </head>
 <body>
 
-  <!-- TELA DE LOGIN POR CPF E SENHA -->
+  <!-- TELA DE LOGIN (NOME DE USUÁRIO E SENHA) -->
   <div id="screen-login" class="login-overlay">
+    <button type="button" class="btn-tema btn-tema-login" onclick="alternarTema()" title="Alternar modo claro/escuro" aria-label="Alternar modo claro/escuro">🌙</button>
     <div class="login-box">
       <div class="brand-logo">🛒</div>
       <h2>Mercadinho Express</h2>
@@ -18,23 +19,23 @@
 
       <form id="form-login" onsubmit="realizarLogin(event)">
         <div class="form-group">
-          <label for="login-cpf">CPF do Operador</label>
-          <input type="text" id="login-cpf" placeholder="000.000.000-00" maxlength="14" required oninput="mascaraCPF(this)">
+          <label for="login-usuario">Nome de usuário</label>
+          <input type="text" id="login-usuario" placeholder="Ex: gustavo" autocomplete="username" autocapitalize="none" spellcheck="false" required>
         </div>
         <div class="form-group">
           <label for="login-senha">Senha</label>
-          <input type="password" id="login-senha" placeholder="••••••••" required>
+          <input type="password" id="login-senha" placeholder="••••••••" autocomplete="current-password" required>
         </div>
         <button type="submit" class="btn btn-accent btn-full">Entrar no Sistema</button>
       </form>
-      <div id="login-erro" class="login-error-msg" style="display:none;">CPF ou senha incorretos!</div>
+      <div id="login-erro" class="login-error-msg" style="display:none;">Usuário ou senha incorretos!</div>
     </div>
   </div>
 
-  <!-- CONTEÚDO PRINCIPAL DO PDV -->
+  <!-- CONTEÚDO PRINCIPAL -->
   <div id="app-container" style="display:none;">
 
-    <!-- NAVBAR SUPERIOR -->
+    <!-- CABEÇALHO -->
     <header class="app-header">
       <div class="brand">
         <div class="logo-icon">🛒</div>
@@ -47,360 +48,402 @@
       <div class="header-controls">
         <div class="status-badge live"><span class="dot"></span> Caixa Aberto</div>
         <div id="relogio-sistema" class="clock-display">--:--:--</div>
-        <button class="btn btn-config" onclick="toggleDrawer()">
-          ⚙️ Configurações & Gestão
-        </button>
+        <button type="button" class="btn-tema" onclick="alternarTema()" title="Alternar modo claro/escuro" aria-label="Alternar modo claro/escuro">🌙</button>
         <button class="btn btn-danger btn-sm" onclick="realizarLogout()" title="Sair do Sistema">🚪 Sair</button>
       </div>
     </header>
 
-    <!-- NAVEGAÇÃO DE ABAS TEMÁTICAS DE SEÇÃO -->
-    <nav class="dept-nav">
-      <button class="dept-btn active" onclick="filtrarDepartamento('todos', this)">🛍️ Todos os Produtos</button>
-      <button class="dept-btn dept-acougue" onclick="filtrarDepartamento('acougue', this)">🥩 Açougue</button>
-      <button class="dept-btn dept-padaria" onclick="filtrarDepartamento('padaria', this)">🥖 Padaria</button>
-      <button class="dept-btn" onclick="filtrarDepartamento('hortifruti', this)">🥬 Hortifruti</button>
-      <button class="dept-btn" onclick="filtrarDepartamento('bebidas', this)">🥤 Bebidas</button>
-      <button class="dept-btn" onclick="filtrarDepartamento('mercearia', this)">🌾 Mercearia</button>
+    <!-- BARRA DE NAVEGAÇÃO ENTRE TELAS -->
+    <nav class="main-nav" aria-label="Telas do sistema">
+      <a href="#caixa"      class="nav-link" data-tela="caixa">🛒 Caixa</a>
+      <a href="#estoque"    class="nav-link" data-tela="estoque">📦 Estoque</a>
+      <a href="#cadastro"   class="nav-link" data-tela="cadastro">➕ Novo Produto</a>
+      <a href="#usuarios"   class="nav-link" data-tela="usuarios">👤 Usuários</a>
+      <a href="#relatorios" class="nav-link" data-tela="relatorios">📊 Relatórios</a>
+      <a href="#whatsapp"   class="nav-link" data-tela="whatsapp">💬 WhatsApp</a>
+      <a href="#aparencia"  class="nav-link" data-tela="aparencia">🎨 Aparência</a>
+      <a href="#jogo"       class="nav-link" data-tela="jogo">🎮 Jogo 2D</a>
     </nav>
 
-    <main class="main-pdv-container">
-      
-      <!-- COLUNA ESQUERDA: PESQUISA E CONSULTA -->
-      <section class="pdv-section search-section">
-        <div class="section-header">
-          <h2 id="titulo-secao-atual">Adicionar por Código</h2>
-          <span class="badge-tag" id="tag-categoria-atual">Todos os Itens</span>
-        </div>
+    <!-- ============ TELA: CAIXA ============ -->
+    <div id="tela-caixa" class="tela">
 
-        <form class="code-search-box" onsubmit="adicionarPorCodigoForm(event)">
-          <label for="input-codigo">Digite ou bipe o código do produto:</label>
-          <div class="input-group">
-            <input type="text" id="input-codigo" placeholder="Ex: 1001" autofocus required>
-            <button type="submit" class="btn btn-accent">Adicionar</button>
-          </div>
-        </form>
+      <nav class="dept-nav">
+        <button class="dept-btn active" onclick="filtrarDepartamento('todos', this)">🛍️ Todos os Produtos</button>
+        <button class="dept-btn dept-acougue" onclick="filtrarDepartamento('acougue', this)">🥩 Açougue</button>
+        <button class="dept-btn dept-padaria" onclick="filtrarDepartamento('padaria', this)">🥖 Padaria</button>
+        <button class="dept-btn" onclick="filtrarDepartamento('hortifruti', this)">🥬 Hortifruti</button>
+        <button class="dept-btn" onclick="filtrarDepartamento('bebidas', this)">🥤 Bebidas</button>
+        <button class="dept-btn" onclick="filtrarDepartamento('mercearia', this)">🌾 Mercearia</button>
+        <button class="dept-btn" onclick="filtrarDepartamento('limpeza', this)">🧼 Limpeza</button>
+      </nav>
 
-        <div class="last-product-card" id="card-ultimo-produto">
-          <span class="card-label">Último item consultado</span>
-          <h3 id="info-prod-nome">Nenhum produto selecionado</h3>
-          <div class="product-details-grid">
-            <div>
-              <span class="detail-title">Código</span>
-              <span class="detail-value" id="info-prod-codigo">---</span>
-            </div>
-            <div>
-              <span class="detail-title">Categoria</span>
-              <span class="detail-value" id="info-prod-categoria">---</span>
-            </div>
-            <div>
-              <span class="detail-title">Preço Unitário</span>
-              <span class="detail-value highlight" id="info-prod-preco">R$ 0.00</span>
-            </div>
-          </div>
-        </div>
+      <main class="main-pdv-container">
 
-        <!-- LISTA DE CÓDIGOS E PRODUTOS COM FILTRO DE BUSCA -->
-        <div class="quick-reference-box">
-          <div class="quick-ref-header">
-            <h3>Lista de Produtos e Códigos</h3>
-            <input type="text" id="busca-rapida-prod" placeholder="🔍 Filtrar nome..." onkeyup="filtrarTabelaConsulta(this.value)">
+        <!-- COLUNA ESQUERDA: SCANNER, CÓDIGO E CONSULTA -->
+        <section class="pdv-section search-section">
+          <div class="section-header">
+            <h2 id="titulo-secao-atual">Adicionar por Código</h2>
+            <span class="badge-tag" id="tag-categoria-atual">Todos os Itens</span>
           </div>
-          <div class="table-wrapper mini-table">
+
+          <!-- SCANNER POR WEBCAM -->
+          <div class="scanner-card" id="scanner-caixa">
+            <div class="scanner-header">
+              <strong>📷 Leitor de código de barras</strong>
+              <div class="scanner-actions">
+                <select id="scan-camera-select" class="form-control scanner-select" style="display:none;" onchange="trocarCameraCaixa(this.value)" aria-label="Escolher câmera"></select>
+                <button type="button" class="btn btn-accent btn-sm" id="btn-scan-caixa" onclick="alternarScannerCaixa()">Ativar câmera</button>
+              </div>
+            </div>
+            <div class="scanner-view" id="scan-view-caixa">
+              <video id="scan-video-caixa" playsinline muted></video>
+              <div class="scanner-guide"></div>
+              <div class="scanner-flash" id="scan-flash-caixa"></div>
+              <div class="scanner-placeholder" id="scan-placeholder-caixa">Clique em "Ativar câmera" e aponte o código de barras do produto</div>
+            </div>
+            <div class="scanner-status" id="scan-status-caixa" role="status">Câmera desligada.</div>
+          </div>
+
+          <form class="code-search-box" onsubmit="adicionarPorCodigoForm(event)">
+            <label for="input-codigo">Ou digite o código do produto:</label>
+            <div class="input-group">
+              <input type="text" id="input-codigo" placeholder="Ex: 1001" autofocus required>
+              <button type="submit" class="btn btn-accent">Adicionar</button>
+            </div>
+          </form>
+
+          <div class="last-product-card" id="card-ultimo-produto">
+            <span class="card-label">Último item consultado</span>
+            <h3 id="info-prod-nome">Nenhum produto selecionado</h3>
+            <div class="product-details-grid">
+              <div>
+                <span class="detail-title">Código</span>
+                <span class="detail-value" id="info-prod-codigo">---</span>
+              </div>
+              <div>
+                <span class="detail-title">Categoria</span>
+                <span class="detail-value" id="info-prod-categoria">---</span>
+              </div>
+              <div>
+                <span class="detail-title">Preço Unitário</span>
+                <span class="detail-value highlight" id="info-prod-preco">R$ 0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="quick-reference-box">
+            <div class="quick-ref-header">
+              <h3>Lista de Produtos e Códigos</h3>
+              <input type="text" id="busca-rapida-prod" placeholder="🔍 Filtrar nome..." onkeyup="filtrarTabelaConsulta(this.value)">
+            </div>
+            <div class="table-wrapper mini-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cód.</th>
+                    <th>Nome do Produto</th>
+                    <th>Dep.</th>
+                    <th class="text-right">Preço</th>
+                  </tr>
+                </thead>
+                <tbody id="lista-codigos-produtos"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- COLUNA DIREITA: CARRINHO E CHECKOUT -->
+        <section class="pdv-section cart-section">
+          <div class="section-header">
+            <h2>Venda Atual</h2>
+            <button class="btn btn-sm btn-danger" onclick="limparCarrinho()">Limpar</button>
+          </div>
+
+          <div class="table-wrapper cart-wrapper">
             <table>
               <thead>
                 <tr>
                   <th>Cód.</th>
-                  <th>Nome do Produto</th>
-                  <th>Dep.</th>
-                  <th class="text-right">Preço</th>
+                  <th>Item</th>
+                  <th class="text-center">Qtd</th>
+                  <th class="text-right">Unit.</th>
+                  <th class="text-right">Total</th>
+                  <th class="text-center">#</th>
                 </tr>
               </thead>
-              <tbody id="lista-codigos-produtos">
-                <!-- Preenchido via JS -->
-              </tbody>
+              <tbody id="lista-carrinho"></tbody>
+            </table>
+          </div>
+
+          <div class="cart-summary">
+            <div class="summary-row">
+              <span>Subtotal:</span>
+              <span>R$ <span id="txt-subtotal">0.00</span></span>
+            </div>
+            <div class="summary-row total">
+              <span>Total a Pagar:</span>
+              <span class="highlight">R$ <span id="txt-total">0.00</span></span>
+            </div>
+          </div>
+
+          <div class="checkout-actions">
+            <button class="btn btn-success" onclick="abrirCheckout('Pix')">📱 Pix</button>
+            <button class="btn btn-primary" onclick="abrirCheckout('Cartão')">💳 Cartão</button>
+            <button class="btn btn-secondary" onclick="abrirCheckout('Dinheiro')">💵 Dinheiro</button>
+            <button class="btn btn-danger" onclick="limparCarrinho()">✕ Cancelar</button>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- ============ TELA: ESTOQUE ============ -->
+    <div id="tela-estoque" class="tela">
+      <div class="tela-gestao">
+        <div class="pdv-section">
+          <div class="section-header">
+            <h2>📦 Consulta de Estoque</h2>
+            <input type="text" id="busca-estoque" class="form-control busca-estoque" placeholder="🔍 Filtrar por nome ou código..." oninput="renderizarEstoque()">
+          </div>
+
+          <div class="metric-card alert-card">
+            <div class="metric-info">
+              <span class="metric-title">Itens próximos ao vencimento (30 dias)</span>
+              <span class="metric-value" id="qtd-vencimento">0 itens</span>
+            </div>
+            <button class="btn btn-warning btn-sm" onclick="gerarPromocaoRelampago()">Aplicar -25% Off</button>
+          </div>
+
+          <div class="table-wrapper tall-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cód.</th>
+                  <th>Produto</th>
+                  <th class="text-center">Qtd</th>
+                  <th>Validade</th>
+                  <th class="text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-estoque"></tbody>
+            </table>
+          </div>
+          <small class="hint" id="estoque-resumo"></small>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TELA: NOVO PRODUTO ============ -->
+    <div id="tela-cadastro" class="tela">
+      <div class="tela-gestao tela-estreita">
+        <div class="pdv-section">
+          <div class="section-header"><h2>➕ Cadastrar Novo Item</h2></div>
+          <form id="form-produto" class="form-card" onsubmit="adicionarNovoProduto(event)">
+            <div class="form-group">
+              <label for="cad-nome">Nome do Produto</label>
+              <input type="text" id="cad-nome" placeholder="Ex: Pão Francês Kg" required>
+            </div>
+            <div class="form-group">
+              <label for="cad-codigo">Código de barras / código do produto</label>
+              <div class="input-group">
+                <input type="text" id="cad-codigo" placeholder="Ex: 7891000100103" required>
+                <button type="button" class="btn btn-primary" id="btn-scan-cadastro" onclick="alternarScannerCadastro()">📷 Ler com a câmera</button>
+              </div>
+            </div>
+
+            <div class="scanner-card" id="scanner-cadastro" style="display:none;">
+              <div class="scanner-view" id="scan-view-cadastro">
+                <video id="scan-video-cadastro" playsinline muted></video>
+                <div class="scanner-guide"></div>
+                <div class="scanner-flash" id="scan-flash-cadastro"></div>
+              </div>
+              <div class="scanner-status" id="scan-status-cadastro" role="status">Aponte o código de barras para a câmera.</div>
+            </div>
+
+            <div class="form-group">
+              <label for="cad-categoria">Departamento / Seção</label>
+              <select id="cad-categoria" class="form-control" required>
+                <option value="Mercearia">Mercearia</option>
+                <option value="Açougue">Açougue</option>
+                <option value="Padaria">Padaria</option>
+                <option value="Hortifruti">Hortifruti</option>
+                <option value="Bebidas">Bebidas</option>
+                <option value="Limpeza">Limpeza</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cad-preco">Preço (R$)</label>
+              <input type="number" step="0.01" min="0" id="cad-preco" placeholder="0.00" required>
+            </div>
+            <div class="form-group">
+              <label for="cad-estoque">Quantidade em Estoque</label>
+              <input type="number" min="0" id="cad-estoque" placeholder="0" required>
+            </div>
+            <div class="form-group">
+              <label for="cad-validade">Data de Validade</label>
+              <input type="date" id="cad-validade" required>
+            </div>
+            <button type="submit" class="btn btn-accent btn-full">+ Cadastrar e Salvar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TELA: USUÁRIOS ============ -->
+    <div id="tela-usuarios" class="tela">
+      <div class="tela-gestao tela-duas-colunas">
+        <div class="pdv-section">
+          <div class="section-header"><h2>👤 Cadastrar Operador</h2></div>
+          <form class="form-card" onsubmit="cadastrarUsuario(event)">
+            <div class="form-group">
+              <label for="cad-usr-nome">Nome do Operador</label>
+              <input type="text" id="cad-usr-nome" placeholder="Ex: João da Silva" required>
+            </div>
+            <div class="form-group">
+              <label for="cad-usr-usuario">Nome de usuário (para entrar no sistema)</label>
+              <input type="text" id="cad-usr-usuario" placeholder="Ex: joao" pattern="[A-Za-z0-9._\-]+" title="Use apenas letras, números, ponto, hífen ou sublinhado (sem espaços)" autocapitalize="none" spellcheck="false" required>
+            </div>
+            <div class="form-group">
+              <label for="cad-usr-senha">Senha de Acesso</label>
+              <input type="password" id="cad-usr-senha" placeholder="••••••••" autocomplete="new-password" required>
+            </div>
+            <button type="submit" class="btn btn-accent btn-full">+ Adicionar Usuário</button>
+          </form>
+        </div>
+
+        <div class="pdv-section">
+          <div class="section-header"><h2>Usuários Cadastrados</h2></div>
+          <div class="table-wrapper tall-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Usuário</th>
+                  <th class="text-center">#</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-usuarios"></tbody>
             </table>
           </div>
         </div>
-      </section>
+      </div>
+    </div>
 
-      <!-- COLUNA DIREITA: CARRINHO E CHECKOUT -->
-      <section class="pdv-section cart-section">
-        <div class="section-header">
-          <h2>Venda Atual</h2>
-          <button class="btn btn-sm btn-danger" onclick="limparCarrinho()">Limpar</button>
-        </div>
-
-        <div class="table-wrapper cart-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Cód.</th>
-                <th>Item</th>
-                <th class="text-center">Qtd</th>
-                <th class="text-right">Unit.</th>
-                <th class="text-right">Total</th>
-                <th class="text-center">#</th>
-              </tr>
-            </thead>
-            <tbody id="lista-carrinho">
-              <!-- Itens do carrinho -->
-            </tbody>
-          </table>
-        </div>
-
-        <div class="cart-summary">
-          <div class="summary-row">
-            <span>Subtotal:</span>
-            <span>R$ <span id="txt-subtotal">0.00</span></span>
+    <!-- ============ TELA: RELATÓRIOS ============ -->
+    <div id="tela-relatorios" class="tela">
+      <div class="tela-gestao">
+        <div class="pdv-section">
+          <div class="section-header"><h2>📊 Resumo & Verificação de Vendas</h2></div>
+          <div class="metrics-container metrics-linha">
+            <div class="metric-card success-card">
+              <div class="metric-info">
+                <span class="metric-title">Faturamento Total</span>
+                <span class="metric-value" id="faturamento-hoje">R$ 0.00</span>
+              </div>
+            </div>
+            <div class="metric-card info-card">
+              <div class="metric-info">
+                <span class="metric-title">Vendas Realizadas</span>
+                <span class="metric-value" id="total-vendas-count">0 transações</span>
+              </div>
+            </div>
           </div>
-          <div class="summary-row total">
-            <span>Total a Pagar:</span>
-            <span class="highlight">R$ <span id="txt-total">0.00</span></span>
+
+          <div class="tela-duas-colunas">
+            <div>
+              <h4 class="sub-titulo">🏆 Produtos Mais Vendidos</h4>
+              <div class="table-wrapper mini-table">
+                <table>
+                  <thead>
+                    <tr><th>Produto</th><th class="text-center">Qtd Vendida</th></tr>
+                  </thead>
+                  <tbody id="tabela-mais-vendidos"></tbody>
+                </table>
+              </div>
+            </div>
+            <div>
+              <h4 class="sub-titulo">⚠️ Produtos Sem/Pouca Saída</h4>
+              <div class="table-wrapper mini-table">
+                <table>
+                  <thead>
+                    <tr><th>Produto</th><th class="text-center">Qtd Vendida</th></tr>
+                  </thead>
+                  <tbody id="tabela-menos-vendidos"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="checkout-actions">
-          <button class="btn btn-success" onclick="abrirCheckout('Pix')">📱 Pix</button>
-          <button class="btn btn-primary" onclick="abrirCheckout('Cartão')">💳 Cartão</button>
-          <button class="btn btn-secondary" onclick="abrirCheckout('Dinheiro')">💵 Dinheiro</button>
-          <button class="btn btn-danger" onclick="limparCarrinho()">✕ Cancelar</button>
+    <!-- ============ TELA: WHATSAPP ============ -->
+    <div id="tela-whatsapp" class="tela">
+      <div class="tela-gestao tela-estreita">
+        <div class="pdv-section">
+          <div class="section-header"><h2>💬 Disparo / WhatsApp</h2></div>
+          <p class="hint">Abra uma conversa com um número real de WhatsApp para enviar ofertas ou comprovantes:</p>
+          <div class="form-card">
+            <div class="form-group">
+              <label for="wa-numero">Número do Cliente (com DDD)</label>
+              <input type="text" id="wa-numero" placeholder="Ex: 5541999998888">
+            </div>
+            <div class="form-group">
+              <label for="wa-mensagem">Mensagem da Promoção</label>
+              <textarea id="wa-mensagem" rows="4" placeholder="Escreva a oferta especial aqui..."></textarea>
+            </div>
+            <button class="btn btn-wa btn-full" onclick="enviarWhatsAppReal()">📱 Conectar & Enviar via WhatsApp</button>
+          </div>
         </div>
-      </section>
+      </div>
+    </div>
 
-    </main>
+    <!-- ============ TELA: APARÊNCIA ============ -->
+    <div id="tela-aparencia" class="tela">
+      <div class="tela-gestao tela-estreita">
+        <div class="pdv-section">
+          <div class="section-header"><h2>🎨 Personalização Estética</h2></div>
+          <div class="form-card">
+            <div class="form-group">
+              <label for="select-tema">Modo de Tema</label>
+              <select id="select-tema" class="form-control" onchange="alterarTema(this.value)">
+                <option value="light">☀️ Modo Claro (Padrão)</option>
+                <option value="dark">🌙 Modo Escuro</option>
+              </select>
+              <small class="hint">Dica: o botão ☀️/🌙 no topo da tela também alterna o modo a qualquer momento.</small>
+            </div>
+            <div class="form-group">
+              <label for="select-fonte">Tamanho da Letra (Fonte)</label>
+              <select id="select-fonte" class="form-control" onchange="alterarTamanhoFonte(this.value)">
+                <option value="small">Pequena</option>
+                <option value="normal" selected>Normal</option>
+                <option value="large">Grande</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TELA: JOGO ============ -->
+    <div id="tela-jogo" class="tela">
+      <div class="tela-gestao tela-estreita">
+        <div class="pdv-section">
+          <div class="section-header"><h2>🎮 Mercado Dash 2D</h2></div>
+          <p class="hint">Use as setas (⬅️ ➡️) ou A/D para mover o carrinho e pegar as compras caindo!</p>
+          <div class="game-container">
+            <canvas id="gameCanvas" width="340" height="300"></canvas>
+            <div class="game-controls">
+              <button class="btn btn-accent btn-sm" onclick="iniciarJogo()">▶️ Iniciar / Reiniciar</button>
+              <span id="game-score">Pontos: 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
-
-  <!-- DRAWER OVERLAY E CENTRAL DE GESTÃO -->
-  <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
-  
-  <aside class="side-drawer" id="side-drawer">
-    <div class="drawer-header">
-      <h2>Central de Gestão</h2>
-      <button class="drawer-close" onclick="toggleDrawer()">✕</button>
-    </div>
-
-    <nav class="drawer-tabs">
-      <button class="tab-btn active" onclick="mudarAba('tab-estoque', this)">Estoque</button>
-      <button class="tab-btn" onclick="mudarAba('tab-cadastro', this)">Novo Produto</button>
-      <button class="tab-btn" onclick="mudarAba('tab-usuarios', this)">Usuários</button>
-      <button class="tab-btn" onclick="mudarAba('tab-financeiro', this)">Relatórios</button>
-      <button class="tab-btn" onclick="mudarAba('tab-marketing', this)">WhatsApp</button>
-      <button class="tab-btn" onclick="mudarAba('tab-estetica', this)">Aparência</button>
-      <button class="tab-btn" onclick="mudarAba('tab-jogo', this)">🎮 Jogo 2D</button>
-    </nav>
-
-    <div class="drawer-body">
-
-      <!-- ABA ESTOQUE -->
-      <div id="tab-estoque" class="tab-content active">
-        <h3>Consulta de Estoque</h3>
-        
-        <div class="metric-card alert-card">
-          <div class="metric-info">
-            <span class="metric-title">Itens Próximos ao Vencimento</span>
-            <span class="metric-value" id="qtd-vencimento">0 itens</span>
-          </div>
-          <button class="btn btn-warning btn-sm" onclick="gerarPromocaoRelampago()">Aplicar -25% Off</button>
-        </div>
-
-        <div class="table-wrapper drawer-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Cód.</th>
-                <th>Produto</th>
-                <th class="text-center">Qtd</th>
-                <th>Validade</th>
-                <th class="text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody id="tabela-estoque">
-              <!-- JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ABA CADASTRAR NOVO ITEM -->
-      <div id="tab-cadastro" class="tab-content">
-        <h3>Cadastrar Novo Item</h3>
-        <form id="form-produto" class="form-card" onsubmit="adicionarNovoProduto(event)">
-          <div class="form-group">
-            <label>Nome do Produto</label>
-            <input type="text" id="cad-nome" placeholder="Ex: Pão Francês Kg" required>
-          </div>
-          <div class="form-group">
-            <label>Código do Produto</label>
-            <input type="text" id="cad-codigo" placeholder="Ex: 5001" required>
-          </div>
-          <div class="form-group">
-            <label>Departamento / Seção</label>
-            <select id="cad-categoria" class="form-control" required>
-              <option value="Mercearia">Mercearia</option>
-              <option value="Açougue">Açougue</option>
-              <option value="Padaria">Padaria</option>
-              <option value="Hortifruti">Hortifruti</option>
-              <option value="Bebidas">Bebidas</option>
-              <option value="Limpeza">Limpeza</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Preço (R$)</label>
-            <input type="number" step="0.01" id="cad-preco" placeholder="0.00" required>
-          </div>
-          <div class="form-group">
-            <label>Quantidade em Estoque</label>
-            <input type="number" id="cad-estoque" placeholder="0" required>
-          </div>
-          <div class="form-group">
-            <label>Data de Validade</label>
-            <input type="date" id="cad-validade" required>
-          </div>
-          <button type="submit" class="btn btn-accent btn-full">+ Cadastrar e Salvar</button>
-        </form>
-      </div>
-
-      <!-- ABA GERENCIAMENTO DE USUÁRIOS -->
-      <div id="tab-usuarios" class="tab-content">
-        <h3>Cadastrar Operador / Usuário</h3>
-        <form class="form-card" onsubmit="cadastrarUsuario(event)">
-          <div class="form-group">
-            <label>Nome do Operador</label>
-            <input type="text" id="cad-usr-nome" placeholder="Ex: João da Silva" required>
-          </div>
-          <div class="form-group">
-            <label>CPF</label>
-            <input type="text" id="cad-usr-cpf" placeholder="000.000.000-00" maxlength="14" required oninput="mascaraCPF(this)">
-          </div>
-          <div class="form-group">
-            <label>Senha de Acesso</label>
-            <input type="password" id="cad-usr-senha" placeholder="••••••••" required>
-          </div>
-          <button type="submit" class="btn btn-accent btn-full">+ Adicionar Usuário</button>
-        </form>
-
-        <h4 style="margin-top: 15px;">👤 Usuários Cadastrados</h4>
-        <div class="table-wrapper mini-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>CPF</th>
-                <th class="text-center">#</th>
-              </tr>
-            </thead>
-            <tbody id="tabela-usuarios">
-              <!-- JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ABA DASHBOARD FINANCEIRO E VERIFICAÇÃO DE VENDAS -->
-      <div id="tab-financeiro" class="tab-content">
-        <h3>Resumo & Verificação de Vendas</h3>
-        <div class="metrics-container">
-          <div class="metric-card success-card">
-            <div class="metric-info">
-              <span class="metric-title">Faturamento Total</span>
-              <span class="metric-value" id="faturamento-hoje">R$ 0.00</span>
-            </div>
-          </div>
-
-          <div class="metric-card info-card">
-            <div class="metric-info">
-              <span class="metric-title">Vendas Realizadas</span>
-              <span class="metric-value" id="total-vendas-count">0 transações</span>
-            </div>
-          </div>
-        </div>
-
-        <h4 style="margin-top: 15px;">📊 Produtos Mais Vendidos</h4>
-        <div class="table-wrapper mini-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Produto</th>
-                <th class="text-center">Qtd Vendida</th>
-              </tr>
-            </thead>
-            <tbody id="tabela-mais-vendidos">
-              <!-- JS -->
-            </tbody>
-          </table>
-        </div>
-
-        <h4 style="margin-top: 15px;">⚠️ Produtos Sem/Pouca Saída</h4>
-        <div class="table-wrapper mini-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Produto</th>
-                <th class="text-center">Qtd Vendida</th>
-              </tr>
-            </thead>
-            <tbody id="tabela-menos-vendidos">
-              <!-- JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ABA MARKETING / WHATSAPP REAL -->
-      <div id="tab-marketing" class="tab-content">
-        <h3>Disparo / WhatsApp</h3>
-        <p class="subtitle" style="margin-bottom:10px;">Conecte diretamente a um número de WhatsApp real para enviar ofertas ou comprovantes:</p>
-        <div class="form-card">
-          <div class="form-group">
-            <label>Número do Cliente (com DDD)</label>
-            <input type="text" id="wa-numero" placeholder="Ex: 5511999998888">
-          </div>
-          <div class="form-group">
-            <label>Mensagem da Promoção</label>
-            <textarea id="wa-mensagem" rows="3" placeholder="Escreva a oferta especial aqui..."></textarea>
-          </div>
-          <button class="btn btn-wa btn-full" onclick="enviarWhatsAppReal()">📱 Conectar & Enviar via WhatsApp</button>
-        </div>
-      </div>
-
-      <!-- ABA ESTÉTICA & PERSONALIZAÇÃO -->
-      <div id="tab-estetica" class="tab-content">
-        <h3>Personalização Estética</h3>
-        <div class="form-card">
-          <div class="form-group">
-            <label>Modo de Tema</label>
-            <select id="select-tema" class="form-control" onchange="alterarTema(this.value)">
-              <option value="light">☀️ Modo Claro (Padrão)</option>
-              <option value="dark">🌙 Modo Escuro</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Tamanho da Letra (Fonte)</label>
-            <select id="select-fonte" class="form-control" onchange="alterarTamanhoFonte(this.value)">
-              <option value="small">Pequena</option>
-              <option value="normal" selected>Normal</option>
-              <option value="large">Grande</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- ABA JOGO 2D NO MERCADO -->
-      <div id="tab-jogo" class="tab-content">
-        <h3>🎮 Mercado Dash 2D</h3>
-        <p style="font-size:0.8rem; color:var(--text-muted);">Use as setas (⬅️ ➡️) ou A/D para mover o carrinho e pegar as compras caindo!</p>
-        <div class="game-container">
-          <canvas id="gameCanvas" width="340" height="300"></canvas>
-          <div class="game-controls">
-            <button class="btn btn-accent btn-sm" onclick="iniciarJogo()">▶️ Iniciar / Reiniciar</button>
-            <span id="game-score">Pontos: 0</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </aside>
 
   <!-- MODAL DE CHECKOUT & CÁLCULO DE TROCO -->
   <div class="modal-overlay" id="modal-checkout">
@@ -408,10 +451,8 @@
       <button class="modal-close" onclick="fecharModal()">✕</button>
       <h3 id="modal-titulo">Finalizar Pagamento</h3>
       <p id="modal-subtexto" class="modal-subtext"></p>
-      
-      <div class="checkout-display" id="modal-conteudo-dinamico">
-        <!-- Injetado dinamicamente -->
-      </div>
+
+      <div class="checkout-display" id="modal-conteudo-dinamico"></div>
 
       <div class="modal-footer">
         <button class="btn btn-success btn-full" onclick="concluirVenda()">Confirmar Recebimento</button>
@@ -420,6 +461,13 @@
     </div>
   </div>
 
+  <!-- AVISOS (TOASTS) -->
+  <div id="toast-area" class="toast-area" aria-live="polite"></div>
+
+  <!-- ZXing: leitor de código de barras (usado quando o navegador não tem BarcodeDetector nativo).
+       Para funcionar sem internet, baixe este arquivo, salve como zxing.min.js na pasta do projeto
+       e troque o endereço abaixo por "zxing.min.js". -->
+  <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
