@@ -5,40 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mercadinho Express - Frente de Caixa</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-logo" viewBox="0 0 24 24"><path d="M4.5 8h15l-1.2 12.2a1 1 0 0 1-1 .8H6.7a1 1 0 0 1-1-.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m9.3 14.2 2 2 3.6-4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-caixa" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2 3h2l2.7 12.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6L22 7H5"/></symbol>
+<symbol id="i-estoque" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+<symbol id="i-cadastro" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+<symbol id="i-usuarios" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+<symbol id="i-relatorios" viewBox="0 0 24 24"><path d="M4 21V10M10 21V4M16 21v-8M22 21H2"/></symbol>
+<symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3.6-7.2L21 3l-1.2 4.4A9 9 0 0 1 21 12z"/></symbol>
+<symbol id="i-aparencia" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2s-.5-2 1-2H17a4 4 0 0 0 4-4c0-5-4-10-9-10z"/><circle cx="7.5" cy="11" r="1"/><circle cx="11" cy="7" r="1"/><circle cx="16" cy="8" r="1"/></symbol>
+<symbol id="i-jogo" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10v5M4.5 12.5h5M16 11h.01M18 14h.01"/></symbol>
+<symbol id="i-sol" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+<symbol id="i-lua" viewBox="0 0 24 24"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></symbol>
+<symbol id="i-olho" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+</defs></svg>
 
-  <!-- TELA DE LOGIN (NOME DE USUÁRIO E SENHA) -->
+  <!-- TELA DE LOGIN (a loja com toldo) -->
   <div id="screen-login" class="login-overlay">
-    <button type="button" class="btn-tema btn-tema-login" onclick="alternarTema()" title="Alternar modo claro/escuro" aria-label="Alternar modo claro/escuro">🌙</button>
-    <div class="login-box">
-      <div class="brand-logo">🛒</div>
-      <h2>Mercadinho Express</h2>
-      <p class="login-subtitle">Acesso ao Frente de Caixa (PDV)</p>
-
-      <form id="form-login" onsubmit="realizarLogin(event)">
-        <div class="form-group">
-          <label for="login-usuario">Nome de usuário</label>
-          <input type="text" id="login-usuario" placeholder="Ex: gustavo" autocomplete="username" autocapitalize="none" spellcheck="false" required>
-        </div>
-        <div class="form-group">
-          <label for="login-senha">Senha</label>
-          <input type="password" id="login-senha" placeholder="••••••••" autocomplete="current-password" required>
-        </div>
-        <button type="submit" class="btn btn-accent btn-full">Entrar no Sistema</button>
-      </form>
-      <div id="login-erro" class="login-error-msg" style="display:none;">Usuário ou senha incorretos!</div>
+    <button type="button" class="btn-tema btn-tema-login" onclick="alternarTema()" title="Alternar modo claro/escuro" aria-label="Alternar modo claro/escuro"></button>
+    <div class="login-shop">
+      <div class="awning-wrap"><div class="awning"></div></div>
+      <div class="login-box">
+        <span class="sign">Aberto</span>
+        <div class="brand-logo"><svg class="icon" aria-hidden="true"><use href="#i-logo"/></svg></div>
+        <h2>Mercadinho Express</h2>
+        <p class="login-subtitle">Entre para abrir o caixa.</p>
+        <form id="form-login" onsubmit="realizarLogin(event)">
+          <div class="form-group">
+            <label for="login-usuario">Nome de usuário</label>
+            <input type="text" id="login-usuario" placeholder="Ex: gustavo" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+          </div>
+          <div class="form-group">
+            <label for="login-senha">Senha</label>
+            <div class="senha-wrap">
+              <input type="password" id="login-senha" placeholder="Sua senha" autocomplete="current-password" required>
+              <button type="button" class="btn-olho" onclick="alternarSenha()" aria-label="Mostrar ou ocultar a senha"><svg class="icon" aria-hidden="true"><use href="#i-olho"/></svg></button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-accent btn-full">Entrar</button>
+        </form>
+        <div id="login-erro" class="login-error-msg" role="alert" style="display:none;">Usuário ou senha incorretos.</div>
+      </div>
     </div>
   </div>
 
   <!-- CONTEÚDO PRINCIPAL -->
   <div id="app-container" style="display:none;">
 
+    <div class="awning-wrap awning-thin"><div class="awning"></div></div>
+
     <!-- CABEÇALHO -->
     <header class="app-header">
       <div class="brand">
-        <div class="logo-icon">🛒</div>
+        <div class="logo-icon"><svg class="icon" aria-hidden="true"><use href="#i-logo"/></svg></div>
         <div>
           <h1>Mercadinho Express</h1>
           <span class="subtitle" id="operador-nome">Operador: ---</span>
@@ -46,23 +69,23 @@
       </div>
 
       <div class="header-controls">
-        <div class="status-badge live"><span class="dot"></span> Caixa Aberto</div>
+        <div class="status-badge live"><span class="dot"></span> Caixa aberto</div>
         <div id="relogio-sistema" class="clock-display">--:--:--</div>
-        <button type="button" class="btn-tema" onclick="alternarTema()" title="Alternar modo claro/escuro" aria-label="Alternar modo claro/escuro">🌙</button>
-        <button class="btn btn-danger btn-sm" onclick="realizarLogout()" title="Sair do Sistema">🚪 Sair</button>
+        <button type="button" class="btn-tema" onclick="alternarTema()" title="Alternar modo claro/escuro" aria-label="Alternar modo claro/escuro"></button>
+        <button class="btn btn-sm" onclick="realizarLogout()" title="Sair do Sistema">Sair</button>
       </div>
     </header>
 
     <!-- BARRA DE NAVEGAÇÃO ENTRE TELAS -->
     <nav class="main-nav" aria-label="Telas do sistema">
-      <a href="#caixa"      class="nav-link" data-tela="caixa">🛒 Caixa</a>
-      <a href="#estoque"    class="nav-link" data-tela="estoque">📦 Estoque</a>
-      <a href="#cadastro"   class="nav-link" data-tela="cadastro">➕ Novo Produto</a>
-      <a href="#usuarios"   class="nav-link" data-tela="usuarios">👤 Usuários</a>
-      <a href="#relatorios" class="nav-link" data-tela="relatorios">📊 Relatórios</a>
-      <a href="#whatsapp"   class="nav-link" data-tela="whatsapp">💬 WhatsApp</a>
-      <a href="#aparencia"  class="nav-link" data-tela="aparencia">🎨 Aparência</a>
-      <a href="#jogo"       class="nav-link" data-tela="jogo">🎮 Jogo 2D</a>
+      <a href="#caixa"      class="nav-link" data-tela="caixa"><svg class="icon" aria-hidden="true"><use href="#i-caixa"/></svg>Caixa</a>
+      <a href="#estoque"    class="nav-link" data-tela="estoque"><svg class="icon" aria-hidden="true"><use href="#i-estoque"/></svg>Estoque</a>
+      <a href="#cadastro"   class="nav-link" data-tela="cadastro"><svg class="icon" aria-hidden="true"><use href="#i-cadastro"/></svg>Novo Produto</a>
+      <a href="#usuarios"   class="nav-link" data-tela="usuarios"><svg class="icon" aria-hidden="true"><use href="#i-usuarios"/></svg>Usuários</a>
+      <a href="#relatorios" class="nav-link" data-tela="relatorios"><svg class="icon" aria-hidden="true"><use href="#i-relatorios"/></svg>Relatórios</a>
+      <a href="#whatsapp"   class="nav-link" data-tela="whatsapp"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
+      <a href="#aparencia"  class="nav-link" data-tela="aparencia"><svg class="icon" aria-hidden="true"><use href="#i-aparencia"/></svg>Aparência</a>
+      <a href="#jogo"       class="nav-link" data-tela="jogo"><svg class="icon" aria-hidden="true"><use href="#i-jogo"/></svg>Jogo 2D</a>
     </nav>
 
     <!-- ============ TELA: CAIXA ============ -->
@@ -90,7 +113,7 @@
           <!-- SCANNER POR WEBCAM -->
           <div class="scanner-card" id="scanner-caixa">
             <div class="scanner-header">
-              <strong>📷 Leitor de código de barras</strong>
+              <strong>Leitor de código de barras</strong>
               <div class="scanner-actions">
                 <select id="scan-camera-select" class="form-control scanner-select" style="display:none;" onchange="trocarCameraCaixa(this.value)" aria-label="Escolher câmera"></select>
                 <button type="button" class="btn btn-accent btn-sm" id="btn-scan-caixa" onclick="alternarScannerCaixa()">Ativar câmera</button>
@@ -135,7 +158,7 @@
           <div class="quick-reference-box">
             <div class="quick-ref-header">
               <h3>Lista de Produtos e Códigos</h3>
-              <input type="text" id="busca-rapida-prod" placeholder="🔍 Filtrar nome..." onkeyup="filtrarTabelaConsulta(this.value)">
+              <input type="text" id="busca-rapida-prod" placeholder="Filtrar nome..." onkeyup="filtrarTabelaConsulta(this.value)">
             </div>
             <div class="table-wrapper mini-table">
               <table>
@@ -156,7 +179,7 @@
         <!-- COLUNA DIREITA: CARRINHO E CHECKOUT -->
         <section class="pdv-section cart-section">
           <div class="section-header">
-            <h2>Venda Atual</h2>
+            <h2>Venda atual</h2>
             <button class="btn btn-sm btn-danger" onclick="limparCarrinho()">Limpar</button>
           </div>
 
@@ -188,10 +211,10 @@
           </div>
 
           <div class="checkout-actions">
-            <button class="btn btn-success" onclick="abrirCheckout('Pix')">📱 Pix</button>
-            <button class="btn btn-primary" onclick="abrirCheckout('Cartão')">💳 Cartão</button>
-            <button class="btn btn-secondary" onclick="abrirCheckout('Dinheiro')">💵 Dinheiro</button>
-            <button class="btn btn-danger" onclick="limparCarrinho()">✕ Cancelar</button>
+            <button class="btn btn-success" onclick="abrirCheckout('Pix')">Pix</button>
+            <button class="btn btn-primary" onclick="abrirCheckout('Cartão')">Cartão</button>
+            <button class="btn btn-secondary" onclick="abrirCheckout('Dinheiro')">Dinheiro</button>
+            <button class="btn btn-danger" onclick="limparCarrinho()">Cancelar</button>
           </div>
         </section>
 
@@ -203,8 +226,8 @@
       <div class="tela-gestao">
         <div class="pdv-section">
           <div class="section-header">
-            <h2>📦 Consulta de Estoque</h2>
-            <input type="text" id="busca-estoque" class="form-control busca-estoque" placeholder="🔍 Filtrar por nome ou código..." oninput="renderizarEstoque()">
+            <h2>Consulta de Estoque</h2>
+            <input type="text" id="busca-estoque" class="form-control busca-estoque" placeholder="Filtrar por nome ou código..." oninput="renderizarEstoque()">
           </div>
 
           <div class="metric-card alert-card">
@@ -212,7 +235,7 @@
               <span class="metric-title">Itens próximos ao vencimento (30 dias)</span>
               <span class="metric-value" id="qtd-vencimento">0 itens</span>
             </div>
-            <button class="btn btn-warning btn-sm" onclick="gerarPromocaoRelampago()">Aplicar -25% Off</button>
+            <button class="btn btn-warning btn-sm" onclick="gerarPromocaoRelampago()">Aplicar 25% de desconto</button>
           </div>
 
           <div class="table-wrapper tall-table">
@@ -238,7 +261,7 @@
     <div id="tela-cadastro" class="tela">
       <div class="tela-gestao tela-estreita">
         <div class="pdv-section">
-          <div class="section-header"><h2>➕ Cadastrar Novo Item</h2></div>
+          <div class="section-header"><h2>Cadastrar Novo Item</h2></div>
           <form id="form-produto" class="form-card" onsubmit="adicionarNovoProduto(event)">
             <div class="form-group">
               <label for="cad-nome">Nome do Produto</label>
@@ -248,7 +271,7 @@
               <label for="cad-codigo">Código de barras / código do produto</label>
               <div class="input-group">
                 <input type="text" id="cad-codigo" placeholder="Ex: 7891000100103" required>
-                <button type="button" class="btn btn-primary" id="btn-scan-cadastro" onclick="alternarScannerCadastro()">📷 Ler com a câmera</button>
+                <button type="button" class="btn btn-primary" id="btn-scan-cadastro" onclick="alternarScannerCadastro()">Ler com a câmera</button>
               </div>
             </div>
 
@@ -294,7 +317,7 @@
     <div id="tela-usuarios" class="tela">
       <div class="tela-gestao tela-duas-colunas">
         <div class="pdv-section">
-          <div class="section-header"><h2>👤 Cadastrar Operador</h2></div>
+          <div class="section-header"><h2>Cadastrar Operador</h2></div>
           <form class="form-card" onsubmit="cadastrarUsuario(event)">
             <div class="form-group">
               <label for="cad-usr-nome">Nome do Operador</label>
@@ -334,7 +357,7 @@
     <div id="tela-relatorios" class="tela">
       <div class="tela-gestao">
         <div class="pdv-section">
-          <div class="section-header"><h2>📊 Resumo & Verificação de Vendas</h2></div>
+          <div class="section-header"><h2>Resumo & Verificação de Vendas</h2></div>
           <div class="metrics-container metrics-linha">
             <div class="metric-card success-card">
               <div class="metric-info">
@@ -352,7 +375,7 @@
 
           <div class="tela-duas-colunas">
             <div>
-              <h4 class="sub-titulo">🏆 Produtos Mais Vendidos</h4>
+              <h4 class="sub-titulo">Produtos Mais Vendidos</h4>
               <div class="table-wrapper mini-table">
                 <table>
                   <thead>
@@ -363,7 +386,7 @@
               </div>
             </div>
             <div>
-              <h4 class="sub-titulo">⚠️ Produtos Sem/Pouca Saída</h4>
+              <h4 class="sub-titulo">Produtos Sem/Pouca Saída</h4>
               <div class="table-wrapper mini-table">
                 <table>
                   <thead>
@@ -382,7 +405,7 @@
     <div id="tela-whatsapp" class="tela">
       <div class="tela-gestao tela-estreita">
         <div class="pdv-section">
-          <div class="section-header"><h2>💬 Disparo / WhatsApp</h2></div>
+          <div class="section-header"><h2>Disparo / WhatsApp</h2></div>
           <p class="hint">Abra uma conversa com um número real de WhatsApp para enviar ofertas ou comprovantes:</p>
           <div class="form-card">
             <div class="form-group">
@@ -393,7 +416,7 @@
               <label for="wa-mensagem">Mensagem da Promoção</label>
               <textarea id="wa-mensagem" rows="4" placeholder="Escreva a oferta especial aqui..."></textarea>
             </div>
-            <button class="btn btn-wa btn-full" onclick="enviarWhatsAppReal()">📱 Conectar & Enviar via WhatsApp</button>
+            <button class="btn btn-wa btn-full" onclick="enviarWhatsAppReal()">Conectar & Enviar via WhatsApp</button>
           </div>
         </div>
       </div>
@@ -403,7 +426,7 @@
     <div id="tela-aparencia" class="tela">
       <div class="tela-gestao tela-estreita">
         <div class="pdv-section">
-          <div class="section-header"><h2>🎨 Personalização Estética</h2></div>
+          <div class="section-header"><h2>Personalização Estética</h2></div>
           <div class="form-card">
             <div class="form-group">
               <label for="select-tema">Modo de Tema</label>
@@ -430,7 +453,7 @@
     <div id="tela-jogo" class="tela">
       <div class="tela-gestao tela-estreita">
         <div class="pdv-section">
-          <div class="section-header"><h2>🎮 Mercado Dash 2D</h2></div>
+          <div class="section-header"><h2>Mercado Dash 2D</h2></div>
           <p class="hint">Use as setas (⬅️ ➡️) ou A/D para mover o carrinho e pegar as compras caindo!</p>
           <div class="game-container">
             <canvas id="gameCanvas" width="340" height="300"></canvas>
@@ -458,6 +481,14 @@
         <button class="btn btn-success btn-full" onclick="concluirVenda()">Confirmar Recebimento</button>
         <button class="btn btn-secondary btn-full" onclick="fecharModal()">Voltar</button>
       </div>
+    </div>
+  </div>
+
+  <!-- AGRADECIMENTO APÓS A VENDA -->
+  <div class="modal-overlay modal-obrigado" id="modal-obrigado" onclick="fecharAgradecimento()">
+    <div class="modal-box" role="dialog" aria-label="Venda concluída">
+      <img src="juan.jpg" alt="Obrigado pela sua compra! Volte sempre, Mercadinho Express">
+      <button type="button" class="btn btn-accent" onclick="fecharAgradecimento()">Nova venda</button>
     </div>
   </div>
 

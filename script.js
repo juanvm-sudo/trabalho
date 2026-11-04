@@ -352,7 +352,7 @@ function alterarTema(tema) {
 
   // O botão mostra para qual modo vai trocar ao clicar
   document.querySelectorAll('.btn-tema').forEach(b => {
-    b.textContent = tema === 'dark' ? '☀️' : '🌙';
+    b.innerHTML = `<svg class="icon" aria-hidden="true"><use href="#i-${tema === 'dark' ? 'sol' : 'lua'}"/></svg>`;
   });
   const select = $('select-tema');
   if (select) select.value = tema;
@@ -391,7 +391,7 @@ function filtrarDepartamento(dept, btn) {
     tag.innerText = "Todos os Itens";
     titulo.innerText = "Adicionar por Código";
   } else {
-    tag.innerText = `Seção: ${dept.toUpperCase()}`;
+    tag.innerText = `Seção ${dept.charAt(0).toUpperCase() + dept.slice(1)}`;
     titulo.innerText = `Produtos - ${dept.charAt(0).toUpperCase() + dept.slice(1)}`;
   }
 
@@ -627,7 +627,7 @@ function concluirVenda() {
 
   fecharModal();
   renderizarTudo();
-  mostrarToast("Venda concluída com sucesso!", 'ok');
+  mostrarAgradecimento();
 }
 
 // ---------------------------------------------------------------------
@@ -1174,7 +1174,7 @@ function moverJogador(e) {
 function atualizarJogo() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = '#0f766e';
+  ctx.fillStyle = '#2C8A4D';
   ctx.fillRect(player.x, player.y, player.width, player.height);
 
   if (Math.random() < 0.1) {
@@ -1185,7 +1185,7 @@ function atualizarJogo() {
     let item = items[i];
     item.y += item.speed;
 
-    ctx.fillStyle = '#d97706';
+    ctx.fillStyle = '#E0A526';
     ctx.beginPath();
     ctx.arc(item.x, item.y, 8, 0, Math.PI * 2);
     ctx.fill();
@@ -1206,3 +1206,31 @@ function atualizarJogo() {
 
   $('game-score').innerText = `Pontos: ${score}`;
 }
+
+
+// ---------------------------------------------------------------------
+//  INTERFACE: mostrar/ocultar senha e agradecimento após a venda
+// ---------------------------------------------------------------------
+function alternarSenha() {
+  const campo = $('login-senha');
+  campo.type = campo.type === 'password' ? 'text' : 'password';
+  campo.focus();
+}
+
+let timerAgradecimento = null;
+function mostrarAgradecimento() {
+  $('modal-obrigado').style.display = 'flex';
+  clearTimeout(timerAgradecimento);
+  timerAgradecimento = setTimeout(fecharAgradecimento, 5000);
+}
+
+function fecharAgradecimento() {
+  clearTimeout(timerAgradecimento);
+  $('modal-obrigado').style.display = 'none';
+  const campo = $('input-codigo');
+  if (campo && telaAtual === 'caixa') campo.focus();
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { fecharAgradecimento(); fecharModal(); }
+});
