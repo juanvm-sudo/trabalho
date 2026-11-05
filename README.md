@@ -26,9 +26,9 @@ Quem já tinha usuários salvos com CPF não perde nada: o nome de usuário é g
 
 ## Telas (barra de navegação)
 
-Caixa · Estoque · Novo Produto · Usuários · Relatórios · WhatsApp · Aparência · Jogo 2D
+Caixa · Estoque · Novo Produto · Usuários · Relatórios · WhatsApp · Jogo 2D
 
-O botão ☀️/🌙 no topo alterna entre modo claro e escuro em qualquer tela (a escolha fica salva).
+O botão ☀️/🌙 no topo (e na tela de login) alterna entre modo claro e escuro (a escolha fica salva). A tela de Aparência foi removida.
 
 ## Scanner de código de barras
 

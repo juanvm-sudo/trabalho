@@ -17,7 +17,6 @@
 <symbol id="i-usuarios" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
 <symbol id="i-relatorios" viewBox="0 0 24 24"><path d="M4 21V10M10 21V4M16 21v-8M22 21H2"/></symbol>
 <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3.6-7.2L21 3l-1.2 4.4A9 9 0 0 1 21 12z"/></symbol>
-<symbol id="i-aparencia" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2s-.5-2 1-2H17a4 4 0 0 0 4-4c0-5-4-10-9-10z"/><circle cx="7.5" cy="11" r="1"/><circle cx="11" cy="7" r="1"/><circle cx="16" cy="8" r="1"/></symbol>
 <symbol id="i-jogo" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10v5M4.5 12.5h5M16 11h.01M18 14h.01"/></symbol>
 <symbol id="i-sol" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
 <symbol id="i-lua" viewBox="0 0 24 24"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></symbol>
@@ -26,14 +25,21 @@
 
   <!-- TELA DE LOGIN (a loja com toldo) -->
   <div id="screen-login" class="login-overlay">
-    <button type="button" class="btn-tema btn-tema-login" onclick="alternarTema()" title="Alternar modo claro/escuro" aria-label="Alternar modo claro/escuro"></button>
-    <div class="login-shop">
-      <div class="awning-wrap"><div class="awning"></div></div>
-      <div class="login-box">
-        <span class="sign">Aberto</span>
-        <div class="brand-logo"><svg class="icon" aria-hidden="true"><use href="#i-logo"/></svg></div>
-        <h2>Mercadinho Express</h2>
-        <p class="login-subtitle">Entre para abrir o caixa.</p>
+    <div class="login-card">
+      <div class="login-left">
+        <div class="brand-mark">
+          <svg class="icon" aria-hidden="true"><use href="#i-logo"/></svg>
+          MERCADINHO
+        </div>
+        <div class="login-left-content">
+          <h2>Capturando vendas,<br>criando experiências</h2>
+          <p>Frente de caixa rápida, estoque inteligente e relatórios completos.</p>
+        </div>
+      </div>
+      <div class="login-right">
+        <button type="button" class="btn-tema btn-tema-login" onclick="alternarTema()" title="Alternar modo claro/escuro" aria-label="Alternar modo claro/escuro"></button>
+        <h2>Entrar no sistema</h2>
+        <p class="login-subtitle">Use seu nome de usuário e senha</p>
         <form id="form-login" onsubmit="realizarLogin(event)">
           <div class="form-group">
             <label for="login-usuario">Nome de usuário</label>
@@ -84,22 +90,11 @@
       <a href="#usuarios"   class="nav-link" data-tela="usuarios"><svg class="icon" aria-hidden="true"><use href="#i-usuarios"/></svg>Usuários</a>
       <a href="#relatorios" class="nav-link" data-tela="relatorios"><svg class="icon" aria-hidden="true"><use href="#i-relatorios"/></svg>Relatórios</a>
       <a href="#whatsapp"   class="nav-link" data-tela="whatsapp"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp</a>
-      <a href="#aparencia"  class="nav-link" data-tela="aparencia"><svg class="icon" aria-hidden="true"><use href="#i-aparencia"/></svg>Aparência</a>
       <a href="#jogo"       class="nav-link" data-tela="jogo"><svg class="icon" aria-hidden="true"><use href="#i-jogo"/></svg>Jogo 2D</a>
     </nav>
 
     <!-- ============ TELA: CAIXA ============ -->
     <div id="tela-caixa" class="tela">
-
-      <nav class="dept-nav">
-        <button class="dept-btn active" onclick="filtrarDepartamento('todos', this)">🛍️ Todos os Produtos</button>
-        <button class="dept-btn dept-acougue" onclick="filtrarDepartamento('acougue', this)">🥩 Açougue</button>
-        <button class="dept-btn dept-padaria" onclick="filtrarDepartamento('padaria', this)">🥖 Padaria</button>
-        <button class="dept-btn" onclick="filtrarDepartamento('hortifruti', this)">🥬 Hortifruti</button>
-        <button class="dept-btn" onclick="filtrarDepartamento('bebidas', this)">🥤 Bebidas</button>
-        <button class="dept-btn" onclick="filtrarDepartamento('mercearia', this)">🌾 Mercearia</button>
-        <button class="dept-btn" onclick="filtrarDepartamento('limpeza', this)">🧼 Limpeza</button>
-      </nav>
 
       <main class="main-pdv-container">
 
@@ -135,25 +130,6 @@
               <button type="submit" class="btn btn-accent">Adicionar</button>
             </div>
           </form>
-
-          <div class="last-product-card" id="card-ultimo-produto">
-            <span class="card-label">Último item consultado</span>
-            <h3 id="info-prod-nome">Nenhum produto selecionado</h3>
-            <div class="product-details-grid">
-              <div>
-                <span class="detail-title">Código</span>
-                <span class="detail-value" id="info-prod-codigo">---</span>
-              </div>
-              <div>
-                <span class="detail-title">Categoria</span>
-                <span class="detail-value" id="info-prod-categoria">---</span>
-              </div>
-              <div>
-                <span class="detail-title">Preço Unitário</span>
-                <span class="detail-value highlight" id="info-prod-preco">R$ 0.00</span>
-              </div>
-            </div>
-          </div>
 
           <div class="quick-reference-box">
             <div class="quick-ref-header">
@@ -227,15 +203,56 @@
         <div class="pdv-section">
           <div class="section-header">
             <h2>Consulta de Estoque</h2>
-            <input type="text" id="busca-estoque" class="form-control busca-estoque" placeholder="Filtrar por nome ou código..." oninput="renderizarEstoque()">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-sm btn-primary" onclick="exportarEstoqueCSV()">⬇ CSV</button>
+              <button class="btn btn-sm btn-secondary" onclick="exportarEstoquePDF()">⬇ PDF / Imprimir</button>
+            </div>
           </div>
 
-          <div class="metric-card alert-card">
+          <div class="metric-card alert-card" style="margin-bottom:14px;">
             <div class="metric-info">
               <span class="metric-title">Itens próximos ao vencimento (30 dias)</span>
               <span class="metric-value" id="qtd-vencimento">0 itens</span>
             </div>
             <button class="btn btn-warning btn-sm" onclick="gerarPromocaoRelampago()">Aplicar 25% de desconto</button>
+          </div>
+
+          <div class="filtros-estoque" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:14px;">
+            <div class="form-group" style="margin:0;">
+              <label>Busca</label>
+              <input type="text" id="busca-estoque" class="form-control" placeholder="Nome, código ou marca..." oninput="estoquePagina=1;renderizarEstoque()">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>Categoria</label>
+              <select id="filtro-cat-estoque" class="form-control" onchange="estoquePagina=1;renderizarEstoque()">
+                <option value="">Todas</option>
+                <option>Mercearia</option><option>Açougue</option><option>Padaria</option>
+                <option>Hortifruti</option><option>Bebidas</option><option>Limpeza</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>Estoque mín.</label>
+              <input type="number" id="filtro-est-min" class="form-control" min="0" placeholder="0" oninput="estoquePagina=1;renderizarEstoque()">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>Estoque máx.</label>
+              <input type="number" id="filtro-est-max" class="form-control" min="0" placeholder="∞" oninput="estoquePagina=1;renderizarEstoque()">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>Validade até</label>
+              <input type="date" id="filtro-val-ate" class="form-control" onchange="estoquePagina=1;renderizarEstoque()">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>Status</label>
+              <select id="filtro-status-estoque" class="form-control" onchange="estoquePagina=1;renderizarEstoque()">
+                <option value="">Todos</option>
+                <option value="ok">OK</option>
+                <option value="baixo">Baixo estoque</option>
+                <option value="vencendo">Vencendo</option>
+                <option value="vencido">Vencido</option>
+                <option value="esgotado">Esgotado</option>
+              </select>
+            </div>
           </div>
 
           <div class="table-wrapper tall-table">
@@ -244,7 +261,10 @@
                 <tr>
                   <th>Cód.</th>
                   <th>Produto</th>
+                  <th>Marca</th>
+                  <th>Cat.</th>
                   <th class="text-center">Qtd</th>
+                  <th class="text-right">Preço</th>
                   <th>Validade</th>
                   <th class="text-center">Status</th>
                 </tr>
@@ -252,7 +272,10 @@
               <tbody id="tabela-estoque"></tbody>
             </table>
           </div>
-          <small class="hint" id="estoque-resumo"></small>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px;">
+            <small class="hint" id="estoque-resumo"></small>
+            <div id="estoque-paginacao" style="display:flex;gap:6px;align-items:center;"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -266,6 +289,10 @@
             <div class="form-group">
               <label for="cad-nome">Nome do Produto</label>
               <input type="text" id="cad-nome" placeholder="Ex: Pão Francês Kg" required>
+            </div>
+            <div class="form-group">
+              <label for="cad-marca">Marca</label>
+              <input type="text" id="cad-marca" placeholder="Ex: Nestlé, Bauducco, Marca própria">
             </div>
             <div class="form-group">
               <label for="cad-codigo">Código de barras / código do produto</label>
@@ -357,8 +384,15 @@
     <div id="tela-relatorios" class="tela">
       <div class="tela-gestao">
         <div class="pdv-section">
-          <div class="section-header"><h2>Resumo & Verificação de Vendas</h2></div>
-          <div class="metrics-container metrics-linha">
+          <div class="section-header">
+            <h2>Relatórios Completos</h2>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-sm btn-primary" onclick="exportarRelatorioCSV()">⬇ CSV</button>
+              <button class="btn btn-sm btn-secondary" onclick="exportarRelatorioPDF()">⬇ PDF / Imprimir</button>
+            </div>
+          </div>
+
+          <div class="metrics-container metrics-linha" style="margin-bottom:16px;">
             <div class="metric-card success-card">
               <div class="metric-info">
                 <span class="metric-title">Faturamento Total</span>
@@ -371,28 +405,96 @@
                 <span class="metric-value" id="total-vendas-count">0 transações</span>
               </div>
             </div>
+            <div class="metric-card">
+              <div class="metric-info">
+                <span class="metric-title">Produtos cadastrados</span>
+                <span class="metric-value" id="rel-total-produtos">0</span>
+              </div>
+            </div>
+            <div class="metric-card alert-card">
+              <div class="metric-info">
+                <span class="metric-title">Valor em estoque</span>
+                <span class="metric-value" id="rel-valor-estoque">R$ 0.00</span>
+              </div>
+            </div>
           </div>
 
-          <div class="tela-duas-colunas">
+          <div class="filtros-estoque" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px;">
+            <div class="form-group" style="margin:0;">
+              <label>Busca</label>
+              <input type="text" id="busca-relatorio" class="form-control" placeholder="Nome, código, marca..." oninput="relatorioPagina=1;renderizarRelatoriosVendas()">
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>Categoria</label>
+              <select id="filtro-cat-rel" class="form-control" onchange="relatorioPagina=1;renderizarRelatoriosVendas()">
+                <option value="">Todas</option>
+                <option>Mercearia</option><option>Açougue</option><option>Padaria</option>
+                <option>Hortifruti</option><option>Bebidas</option><option>Limpeza</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>Ordenar por</label>
+              <select id="filtro-ordem-rel" class="form-control" onchange="relatorioPagina=1;renderizarRelatoriosVendas()">
+                <option value="vendas-desc">Mais vendidos</option>
+                <option value="vendas-asc">Menos vendidos</option>
+                <option value="estoque-asc">Menor estoque</option>
+                <option value="estoque-desc">Maior estoque</option>
+                <option value="preco-desc">Maior preço</option>
+                <option value="preco-asc">Menor preço</option>
+                <option value="nome">Nome A–Z</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>Só com vendas?</label>
+              <select id="filtro-com-vendas" class="form-control" onchange="relatorioPagina=1;renderizarRelatoriosVendas()">
+                <option value="">Todos</option>
+                <option value="sim">Com vendas</option>
+                <option value="nao">Sem vendas</option>
+              </select>
+            </div>
+          </div>
+
+          <h4 class="sub-titulo">Detalhamento de produtos</h4>
+          <div class="table-wrapper tall-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cód.</th>
+                  <th>Produto</th>
+                  <th>Marca</th>
+                  <th>Cat.</th>
+                  <th class="text-right">Preço</th>
+                  <th class="text-center">Estoque</th>
+                  <th>Validade</th>
+                  <th class="text-center">Vendidos</th>
+                  <th class="text-right">Receita</th>
+                  <th class="text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-relatorio-produtos"></tbody>
+            </table>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px;">
+            <small class="hint" id="relatorio-resumo"></small>
+            <div id="relatorio-paginacao" style="display:flex;gap:6px;align-items:center;"></div>
+          </div>
+
+          <div class="tela-duas-colunas" style="margin-top:24px;">
             <div>
-              <h4 class="sub-titulo">Produtos Mais Vendidos</h4>
+              <h4 class="sub-titulo">Top 10 mais vendidos</h4>
               <div class="table-wrapper mini-table">
                 <table>
-                  <thead>
-                    <tr><th>Produto</th><th class="text-center">Qtd Vendida</th></tr>
-                  </thead>
+                  <thead><tr><th>#</th><th>Produto</th><th class="text-center">Qtd</th><th class="text-right">Receita</th></tr></thead>
                   <tbody id="tabela-mais-vendidos"></tbody>
                 </table>
               </div>
             </div>
             <div>
-              <h4 class="sub-titulo">Produtos Sem/Pouca Saída</h4>
+              <h4 class="sub-titulo">Resumo por categoria</h4>
               <div class="table-wrapper mini-table">
                 <table>
-                  <thead>
-                    <tr><th>Produto</th><th class="text-center">Qtd Vendida</th></tr>
-                  </thead>
-                  <tbody id="tabela-menos-vendidos"></tbody>
+                  <thead><tr><th>Categoria</th><th class="text-center">Itens</th><th class="text-center">Estoque</th><th class="text-right">Valor</th></tr></thead>
+                  <tbody id="tabela-por-categoria"></tbody>
                 </table>
               </div>
             </div>
@@ -417,33 +519,6 @@
               <textarea id="wa-mensagem" rows="4" placeholder="Escreva a oferta especial aqui..."></textarea>
             </div>
             <button class="btn btn-wa btn-full" onclick="enviarWhatsAppReal()">Conectar & Enviar via WhatsApp</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ============ TELA: APARÊNCIA ============ -->
-    <div id="tela-aparencia" class="tela">
-      <div class="tela-gestao tela-estreita">
-        <div class="pdv-section">
-          <div class="section-header"><h2>Personalização Estética</h2></div>
-          <div class="form-card">
-            <div class="form-group">
-              <label for="select-tema">Modo de Tema</label>
-              <select id="select-tema" class="form-control" onchange="alterarTema(this.value)">
-                <option value="light">☀️ Modo Claro (Padrão)</option>
-                <option value="dark">🌙 Modo Escuro</option>
-              </select>
-              <small class="hint">Dica: o botão ☀️/🌙 no topo da tela também alterna o modo a qualquer momento.</small>
-            </div>
-            <div class="form-group">
-              <label for="select-fonte">Tamanho da Letra (Fonte)</label>
-              <select id="select-fonte" class="form-control" onchange="alterarTamanhoFonte(this.value)">
-                <option value="small">Pequena</option>
-                <option value="normal" selected>Normal</option>
-                <option value="large">Grande</option>
-              </select>
-            </div>
           </div>
         </div>
       </div>

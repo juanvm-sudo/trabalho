@@ -63,12 +63,19 @@ let totalVendasCount = parseInt(localStorage.getItem('mercado_vendas_count')) ||
 let registroVendasProdutos = lerJSON('mercado_registro_vendas', {});
 let departamentoAtual = 'todos';
 let sessaoAtiva = false;
+let estoquePagina = 1;
+const ESTOQUE_POR_PAGINA = 20;
+let relatorioPagina = 1;
+const RELATORIO_POR_PAGINA = 15;
 
 let produtos = lerJSON('mercado_produtos', []);
 
 if (!Array.isArray(produtos) || produtos.length < 1000) {
   produtos = gerarMaisDe1000Produtos();
   salvarDados();
+} else {
+  // Garante campo marca em produtos antigos
+  produtos.forEach(p => { if (!p.marca) p.marca = '—'; });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -102,10 +109,12 @@ function gerarMaisDe1000Produtos() {
       const precoProd = parseFloat((Math.random() * 45 + 2).toFixed(2));
       const estoqueProd = Math.floor(Math.random() * 80) + 5;
 
+      const marcas = ["Premium", "Casa", "Gold", "Natural", "Select", "Extra"];
       prods.push({
         id: idContador,
         codigo: idContador.toString(),
         nome: nomeProd,
+        marca: marcas[i % marcas.length],
         categoria: cat,
         preco: precoProd,
         estoque: estoqueProd,
@@ -231,7 +240,7 @@ function realizarLogout() {
 // ---------------------------------------------------------------------
 //  NAVEGAÇÃO ENTRE TELAS (barra de navegação, usa o # da URL)
 // ---------------------------------------------------------------------
-const TELAS = ['caixa', 'estoque', 'cadastro', 'usuarios', 'relatorios', 'whatsapp', 'aparencia', 'jogo'];
+const TELAS = ['caixa', 'estoque', 'cadastro', 'usuarios', 'relatorios', 'whatsapp', 'jogo'];
 let telaAtual = null;
 let codigoPendenteCadastro = '';
 
@@ -373,7 +382,6 @@ function carregarPreferenciasEstetica() {
   const fonteSalva = localStorage.getItem('mercado_fonte') || 'normal';
   alterarTema(temaSalvo);
   alterarTamanhoFonte(fonteSalva);
-  $('select-fonte').value = fonteSalva;
 }
 
 // ---------------------------------------------------------------------
@@ -421,7 +429,7 @@ function renderizarListaCodigos(filtroNome = "") {
   tbody.innerHTML = prodsFiltrados.slice(0, 50).map(p => `
     <tr class="clickable-row" data-codigo="${esc(p.codigo)}" onclick="preencherEPesquisar(this.dataset.codigo)" title="Clique para adicionar">
       <td><span class="tag-codigo">${esc(p.codigo)}</span></td>
-      <td>${esc(p.nome)}</td>
+      <td>${esc(p.nome)}${p.marca ? ' <small style="color:var(--muted)">· '+esc(p.marca)+'</small>' : ''}</td>
       <td><small>${esc(p.categoria)}</small></td>
       <td class="text-right">R$ ${p.preco.toFixed(2)}</td>
     </tr>
@@ -461,10 +469,13 @@ function adicionarPorCodigo(codigo) {
     return { ok: false, motivo: 'esgotado', produto, mensagem: `${produto.nome}: esgotado no estoque!` };
   }
 
-  $('info-prod-nome').innerText = produto.nome;
-  $('info-prod-codigo').innerText = produto.codigo;
-  $('info-prod-categoria').innerText = produto.categoria;
-  $('info-prod-preco').innerText = `R$ ${produto.preco.toFixed(2)}`;
+  const elNome = $('info-prod-nome');
+  if (elNome) {
+    elNome.innerText = produto.nome;
+    $('info-prod-codigo').innerText = produto.codigo;
+    $('info-prod-categoria').innerText = produto.categoria;
+    $('info-prod-preco').innerText = `R$ ${produto.preco.toFixed(2)}`;
+  }
 
   const itemCart = carrinho.find(item => item.id === produto.id);
   if (itemCart) {
@@ -532,7 +543,7 @@ function renderizarCarrinho() {
   const txtSubtotal = $('txt-subtotal');
 
   if (carrinho.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="color:var(--text-muted)">Carrinho vazio</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="color:var(--muted)">Carrinho vazio</td></tr>';
     txtTotal.innerText = '0.00';
     txtSubtotal.innerText = '0.00';
     return;
@@ -601,9 +612,9 @@ function calcularTroco(total) {
   const box = $('box-troco');
 
   if (troco < 0) {
-    box.innerHTML = `<span style="color:var(--danger-text)">Faltam: R$ ${Math.abs(troco).toFixed(2)}</span>`;
+    box.innerHTML = `<span style="color:var(--tomato)">Faltam: R$ ${Math.abs(troco).toFixed(2)}</span>`;
   } else {
-    box.innerHTML = `<span style="color:var(--success-text)">Troco: R$ ${troco.toFixed(2)}</span>`;
+    box.innerHTML = `<span style="color:var(--green-deep)">Troco: R$ ${troco.toFixed(2)}</span>`;
   }
 }
 
@@ -633,34 +644,180 @@ function concluirVenda() {
 // ---------------------------------------------------------------------
 //  RELATÓRIOS DE VENDAS
 // ---------------------------------------------------------------------
+function statusProduto(p) {
+  const dias = diasParaVencer(p.validade);
+  if (dias < 0) return { cls: 'status-danger', txt: 'Vencido' };
+  if (p.estoque <= 0) return { cls: 'status-danger', txt: 'Esgotado' };
+  if (p.estoque <= 5) return { cls: 'status-warn', txt: 'Baixo' };
+  if (dias <= 30) return { cls: 'status-warn', txt: 'Vencendo' };
+  return { cls: 'status-ok', txt: 'OK' };
+}
+
 function renderizarRelatoriosVendas() {
-  const tbodyMais = $('tabela-mais-vendidos');
-  const tbodyMenos = $('tabela-menos-vendidos');
+  const busca = ($('busca-relatorio')?.value || '').trim().toLowerCase();
+  const cat = $('filtro-cat-rel')?.value || '';
+  const ordem = $('filtro-ordem-rel')?.value || 'vendas-desc';
+  const comVendas = $('filtro-com-vendas')?.value || '';
 
-  const listaOrdenada = Object.keys(registroVendasProdutos).map(nome => ({
-    nome,
-    qtd: registroVendasProdutos[nome]
-  })).sort((a, b) => b.qtd - a.qtd);
+  let lista = produtos.map(p => {
+    const qtdVend = registroVendasProdutos[p.nome] || 0;
+    return {
+      ...p,
+      qtdVendida: qtdVend,
+      receita: qtdVend * p.preco
+    };
+  });
 
-  if (listaOrdenada.length === 0) {
-    tbodyMais.innerHTML = '<tr><td colspan="2" class="text-center">Nenhuma venda gravada</td></tr>';
-  } else {
-    tbodyMais.innerHTML = listaOrdenada.slice(0, 5)
-      .map(item => `<tr><td>${esc(item.nome)}</td><td class="text-center">${item.qtd} un</td></tr>`).join('');
+  if (busca) {
+    lista = lista.filter(p => `${p.nome} ${p.codigo} ${p.marca||''} ${p.categoria}`.toLowerCase().includes(busca));
+  }
+  if (cat) lista = lista.filter(p => p.categoria === cat);
+  if (comVendas === 'sim') lista = lista.filter(p => p.qtdVendida > 0);
+  if (comVendas === 'nao') lista = lista.filter(p => p.qtdVendida === 0);
+
+  const sorters = {
+    'vendas-desc': (a,b) => b.qtdVendida - a.qtdVendida || a.nome.localeCompare(b.nome),
+    'vendas-asc': (a,b) => a.qtdVendida - b.qtdVendida || a.nome.localeCompare(b.nome),
+    'estoque-asc': (a,b) => a.estoque - b.estoque,
+    'estoque-desc': (a,b) => b.estoque - a.estoque,
+    'preco-desc': (a,b) => b.preco - a.preco,
+    'preco-asc': (a,b) => a.preco - b.preco,
+    'nome': (a,b) => a.nome.localeCompare(b.nome)
+  };
+  lista.sort(sorters[ordem] || sorters['vendas-desc']);
+
+  // Tabela principal paginada
+  const tbody = $('tabela-relatorio-produtos');
+  if (tbody) {
+    const totalPaginas = Math.max(1, Math.ceil(lista.length / RELATORIO_POR_PAGINA));
+    if (relatorioPagina > totalPaginas) relatorioPagina = totalPaginas;
+    const inicio = (relatorioPagina - 1) * RELATORIO_POR_PAGINA;
+    const pagina = lista.slice(inicio, inicio + RELATORIO_POR_PAGINA);
+
+    tbody.innerHTML = pagina.map(p => {
+      const st = statusProduto(p);
+      return `<tr>
+        <td><span class="tag-codigo">${esc(p.codigo)}</span></td>
+        <td>${esc(p.nome)}</td>
+        <td>${esc(p.marca || '—')}</td>
+        <td><small>${esc(p.categoria)}</small></td>
+        <td class="text-right">R$ ${p.preco.toFixed(2)}</td>
+        <td class="text-center">${p.estoque}</td>
+        <td>${formatarData(p.validade)}</td>
+        <td class="text-center">${p.qtdVendida}</td>
+        <td class="text-right">R$ ${p.receita.toFixed(2)}</td>
+        <td class="text-center"><span class="badge-status ${st.cls}">${st.txt}</span></td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="10" class="text-center">Nenhum produto</td></tr>';
+
+    const resumo = $('relatorio-resumo');
+    if (resumo) resumo.innerText = `Mostrando ${pagina.length ? inicio+1 : 0}–${inicio+pagina.length} de ${lista.length}`;
+
+    const pag = $('relatorio-paginacao');
+    if (pag) {
+      pag.innerHTML = `
+        <button class="btn btn-sm" ${relatorioPagina <= 1 ? 'disabled' : ''} onclick="relatorioPagina--;renderizarRelatoriosVendas()">◀</button>
+        <span style="font-weight:600;min-width:90px;text-align:center;">Pág. ${relatorioPagina}/${totalPaginas}</span>
+        <button class="btn btn-sm" ${relatorioPagina >= totalPaginas ? 'disabled' : ''} onclick="relatorioPagina++;renderizarRelatoriosVendas()">▶</button>
+      `;
+    }
   }
 
-  tbodyMenos.innerHTML = produtos.filter(p => !registroVendasProdutos[p.nome]).slice(0, 5)
-    .map(item => `<tr><td>${esc(item.nome)}</td><td class="text-center">0 un</td></tr>`).join('');
+  // Top 10
+  const tbodyMais = $('tabela-mais-vendidos');
+  if (tbodyMais) {
+    const top = [...lista].sort((a,b) => b.qtdVendida - a.qtdVendida).slice(0, 10);
+    tbodyMais.innerHTML = top.filter(p => p.qtdVendida > 0).map((p, i) =>
+      `<tr><td>${i+1}</td><td>${esc(p.nome)}</td><td class="text-center">${p.qtdVendida}</td><td class="text-right">R$ ${p.receita.toFixed(2)}</td></tr>`
+    ).join('') || '<tr><td colspan="4" class="text-center">Nenhuma venda</td></tr>';
+  }
+
+  // Por categoria
+  const tbodyCat = $('tabela-por-categoria');
+  if (tbodyCat) {
+    const cats = {};
+    produtos.forEach(p => {
+      if (!cats[p.categoria]) cats[p.categoria] = { itens: 0, estoque: 0, valor: 0 };
+      cats[p.categoria].itens++;
+      cats[p.categoria].estoque += p.estoque;
+      cats[p.categoria].valor += p.estoque * p.preco;
+    });
+    tbodyCat.innerHTML = Object.entries(cats).sort((a,b) => b[1].valor - a[1].valor).map(([nome, d]) =>
+      `<tr><td>${esc(nome)}</td><td class="text-center">${d.itens}</td><td class="text-center">${d.estoque}</td><td class="text-right">R$ ${d.valor.toFixed(2)}</td></tr>`
+    ).join('');
+  }
 }
 
 function atualizarMetricas() {
-  $('faturamento-hoje').innerText = `R$ ${faturamentoTotal.toFixed(2)}`;
-  $('total-vendas-count').innerText = `${totalVendasCount} transações`;
+  const fat = $('faturamento-hoje');
+  if (fat) fat.innerText = `R$ ${faturamentoTotal.toFixed(2)}`;
+  const tv = $('total-vendas-count');
+  if (tv) tv.innerText = `${totalVendasCount} transações`;
+  const tp = $('rel-total-produtos');
+  if (tp) tp.innerText = produtos.length.toLocaleString('pt-BR');
+  const ve = $('rel-valor-estoque');
+  if (ve) {
+    const valor = produtos.reduce((s, p) => s + p.estoque * p.preco, 0);
+    ve.innerText = `R$ ${valor.toFixed(2)}`;
+  }
 }
 
-// ---------------------------------------------------------------------
-//  WHATSAPP
-// ---------------------------------------------------------------------
+function exportarRelatorioCSV() {
+  const busca = ($('busca-relatorio')?.value || '').trim().toLowerCase();
+  const cat = $('filtro-cat-rel')?.value || '';
+  let lista = produtos.map(p => {
+    const qtdVend = registroVendasProdutos[p.nome] || 0;
+    return { ...p, qtdVendida: qtdVend, receita: qtdVend * p.preco };
+  });
+  if (busca) lista = lista.filter(p => `${p.nome} ${p.codigo} ${p.marca||''}`.toLowerCase().includes(busca));
+  if (cat) lista = lista.filter(p => p.categoria === cat);
+
+  const sep = ';';
+  const header = ['Código','Nome','Marca','Categoria','Preço','Estoque','Validade','Vendidos','Receita','Status'].join(sep);
+  const rows = lista.map(p => {
+    const st = statusProduto(p).txt;
+    return [p.codigo, `"${(p.nome||'').replace(/"/g,'""')}"`, p.marca||'', p.categoria, p.preco.toFixed(2), p.estoque, p.validade, p.qtdVendida, p.receita.toFixed(2), st].join(sep);
+  });
+  const csv = '\uFEFF' + header + '\n' + rows.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `relatorio_mercadinho_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  mostrarToast(`Exportados ${lista.length} produtos.`, 'ok');
+}
+
+function exportarRelatorioPDF() {
+  const lista = produtos.map(p => {
+    const qtdVend = registroVendasProdutos[p.nome] || 0;
+    return { ...p, qtdVendida: qtdVend, receita: qtdVend * p.preco };
+  }).sort((a,b) => b.qtdVendida - a.qtdVendida).slice(0, 80);
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>Relatório — Mercadinho Express</title>
+    <style>body{font-family:system-ui;padding:20px;color:#000} table{width:100%;border-collapse:collapse;font-size:11px}
+    th,td{border:1px solid #ccc;padding:5px 6px} th{background:#143109;color:#fff}
+    h1{font-size:18px;margin:0 0 4px} .meta{color:#555;margin-bottom:12px}
+    .cards{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+    .card{border:1px solid #ddd;padding:10px 14px;border-radius:8px;min-width:140px}
+    .card b{display:block;font-size:1.2rem}</style></head><body>
+    <h1>Mercadinho Express — Relatório de Produtos</h1>
+    <p class="meta">Gerado em ${new Date().toLocaleString('pt-BR')}</p>
+    <div class="cards">
+      <div class="card">Faturamento<br><b>R$ ${faturamentoTotal.toFixed(2)}</b></div>
+      <div class="card">Vendas<br><b>${totalVendasCount}</b></div>
+      <div class="card">Produtos<br><b>${produtos.length}</b></div>
+    </div>
+    <table><thead><tr><th>Cód.</th><th>Produto</th><th>Marca</th><th>Cat.</th><th>Preço</th><th>Est.</th><th>Vend.</th><th>Receita</th><th>Status</th></tr></thead>
+    <tbody>${lista.map(p => {
+      const st = statusProduto(p).txt;
+      return `<tr><td>${p.codigo}</td><td>${p.nome}</td><td>${p.marca||'—'}</td><td>${p.categoria}</td>
+      <td>R$ ${p.preco.toFixed(2)}</td><td>${p.estoque}</td><td>${p.qtdVendida}</td><td>R$ ${p.receita.toFixed(2)}</td><td>${st}</td></tr>`;
+    }).join('')}</tbody></table>
+    <script>window.onload=()=>{window.print();}</script></body></html>`);
+  win.document.close();
+}
+
 function enviarWhatsAppReal() {
   const num = $('wa-numero').value.replace(/\D/g, "");
   const msg = encodeURIComponent($('wa-mensagem').value || "Confira nossas ofertas!");
@@ -686,39 +843,119 @@ function formatarData(validade) {
   return isNaN(v) ? '---' : v.toLocaleDateString('pt-BR');
 }
 
+function filtrarListaEstoque() {
+  const busca = ($('busca-estoque')?.value || '').trim().toLowerCase();
+  const cat = $('filtro-cat-estoque')?.value || '';
+  const estMin = parseInt($('filtro-est-min')?.value);
+  const estMax = parseInt($('filtro-est-max')?.value);
+  const valAte = $('filtro-val-ate')?.value || '';
+  const status = $('filtro-status-estoque')?.value || '';
+
+  return produtos.filter(p => {
+    if (busca) {
+      const txt = `${p.nome} ${p.codigo} ${p.marca || ''} ${p.categoria}`.toLowerCase();
+      if (!txt.includes(busca)) return false;
+    }
+    if (cat && p.categoria !== cat) return false;
+    if (!isNaN(estMin) && p.estoque < estMin) return false;
+    if (!isNaN(estMax) && p.estoque > estMax) return false;
+    if (valAte) {
+      const d = diasParaVencer(p.validade);
+      const limite = Math.round((new Date(valAte + 'T00:00:00') - new Date().setHours(0,0,0,0)) / 86400000);
+      if (d > limite) return false;
+    }
+    if (status) {
+      const dias = diasParaVencer(p.validade);
+      if (status === 'esgotado' && p.estoque > 0) return false;
+      if (status === 'baixo' && (p.estoque > 5 || p.estoque <= 0)) return false;
+      if (status === 'vencido' && dias >= 0) return false;
+      if (status === 'vencendo' && (dias < 0 || dias > 30 || p.estoque <= 0)) return false;
+      if (status === 'ok' && (dias < 0 || p.estoque <= 5 || (dias <= 30 && dias >= 0))) return false;
+    }
+    return true;
+  });
+}
+
+
 function renderizarEstoque() {
   const tabela = $('tabela-estoque');
-  const campoBusca = $('busca-estoque');
-  const filtro = campoBusca ? campoBusca.value.trim().toLowerCase() : '';
+  if (!tabela) return;
 
-  let lista = produtos;
-  if (filtro) {
-    lista = produtos.filter(p => p.nome.toLowerCase().includes(filtro) || p.codigo.includes(filtro));
-  }
+  const lista = filtrarListaEstoque();
+  const totalPaginas = Math.max(1, Math.ceil(lista.length / ESTOQUE_POR_PAGINA));
+  if (estoquePagina > totalPaginas) estoquePagina = totalPaginas;
+  const inicio = (estoquePagina - 1) * ESTOQUE_POR_PAGINA;
+  const pagina = lista.slice(inicio, inicio + ESTOQUE_POR_PAGINA);
 
-  tabela.innerHTML = lista.slice(0, 100).map(p => {
-    const dias = diasParaVencer(p.validade);
-    let status = '<span class="badge-status status-ok">OK</span>';
-    if (dias < 0) status = '<span class="badge-status status-danger">Vencido</span>';
-    else if (p.estoque <= 0) status = '<span class="badge-status status-danger">Esgotado</span>';
-    else if (p.estoque <= 5) status = '<span class="badge-status status-warn">Baixo</span>';
-    else if (dias <= 30) status = '<span class="badge-status status-warn">Vencendo</span>';
-
+  tabela.innerHTML = pagina.map(p => {
+    const st = statusProduto(p);
     return `
       <tr>
-        <td>${esc(p.codigo)}</td>
+        <td><span class="tag-codigo">${esc(p.codigo)}</span></td>
         <td>${esc(p.nome)}${p.promocao ? ' <span class="badge-status status-ok">-25%</span>' : ''}</td>
+        <td>${esc(p.marca || '—')}</td>
+        <td><small>${esc(p.categoria)}</small></td>
         <td class="text-center">${p.estoque} un</td>
+        <td class="text-right">R$ ${p.preco.toFixed(2)}</td>
         <td>${formatarData(p.validade)}</td>
-        <td class="text-center">${status}</td>
+        <td class="text-center"><span class="badge-status ${st.cls}">${st.txt}</span></td>
       </tr>
     `;
-  }).join('') || '<tr><td colspan="5" class="text-center">Nenhum produto encontrado</td></tr>';
+  }).join('') || '<tr><td colspan="8" class="text-center">Nenhum produto encontrado</td></tr>';
 
-  $('estoque-resumo').innerText = `Mostrando ${Math.min(lista.length, 100)} de ${lista.length} produtos.`;
+  const resumo = $('estoque-resumo');
+  if (resumo) resumo.innerText = `Mostrando ${pagina.length ? inicio + 1 : 0}–${inicio + pagina.length} de ${lista.length} produtos filtrados.`;
+
+  const pag = $('estoque-paginacao');
+  if (pag) {
+    pag.innerHTML = `
+      <button class="btn btn-sm" ${estoquePagina <= 1 ? 'disabled' : ''} onclick="estoquePagina--;renderizarEstoque()">◀</button>
+      <span style="font-weight:600;min-width:90px;text-align:center;">Pág. ${estoquePagina}/${totalPaginas}</span>
+      <button class="btn btn-sm" ${estoquePagina >= totalPaginas ? 'disabled' : ''} onclick="estoquePagina++;renderizarEstoque()">▶</button>
+    `;
+  }
 
   const vencendo = produtos.filter(p => { const d = diasParaVencer(p.validade); return d >= 0 && d <= 30; }).length;
-  $('qtd-vencimento').innerText = `${vencendo} ${vencendo === 1 ? 'item' : 'itens'}`;
+  const qv = $('qtd-vencimento');
+  if (qv) qv.innerText = `${vencendo} ${vencendo === 1 ? 'item' : 'itens'}`;
+}
+
+function exportarEstoqueCSV() {
+  const lista = filtrarListaEstoque();
+  const sep = ';';
+  const header = ['Código', 'Nome', 'Marca', 'Categoria', 'Estoque', 'Preço', 'Validade', 'Status'].join(sep);
+  const rows = lista.map(p => {
+    const st = statusProduto(p).txt;
+    return [p.codigo, `"${(p.nome || '').replace(/"/g, '""')}"`, p.marca || '', p.categoria, p.estoque, p.preco.toFixed(2), p.validade, st].join(sep);
+  });
+  const csv = '\uFEFF' + header + '\n' + rows.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `estoque_mercadinho_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  mostrarToast(`Exportados ${lista.length} produtos em CSV.`, 'ok');
+}
+
+function exportarEstoquePDF() {
+  // Abre janela de impressão com a tabela filtrada (usuário pode salvar como PDF)
+  const lista = filtrarListaEstoque();
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>Estoque — Mercadinho Express</title>
+    <style>body{font-family:system-ui;padding:20px;color:#000} table{width:100%;border-collapse:collapse;font-size:12px}
+    th,td{border:1px solid #ccc;padding:6px 8px;text-align:left} th{background:#143109;color:#fff}
+    h1{font-size:18px;margin:0 0 4px} .meta{color:#555;margin-bottom:16px}</style></head><body>
+    <h1>Mercadinho Express — Estoque</h1>
+    <p class="meta">Gerado em ${new Date().toLocaleString('pt-BR')} · ${lista.length} produtos</p>
+    <table><thead><tr><th>Cód.</th><th>Produto</th><th>Marca</th><th>Cat.</th><th>Qtd</th><th>Preço</th><th>Validade</th><th>Status</th></tr></thead>
+    <tbody>${lista.map(p => {
+      const st = statusProduto(p).txt;
+      return `<tr><td>${p.codigo}</td><td>${p.nome}</td><td>${p.marca||'—'}</td><td>${p.categoria}</td>
+      <td>${p.estoque}</td><td>R$ ${p.preco.toFixed(2)}</td><td>${formatarData(p.validade)}</td><td>${st}</td></tr>`;
+    }).join('')}</tbody></table>
+    <script>window.onload=()=>{window.print();}</script></body></html>`);
+  win.document.close();
 }
 
 function gerarPromocaoRelampago() {
@@ -758,6 +995,7 @@ function adicionarNovoProduto(e) {
     id: Date.now(),
     codigo,
     nome,
+    marca: ($('cad-marca').value || '').trim() || '—',
     categoria: $('cad-categoria').value,
     preco: parseFloat($('cad-preco').value),
     estoque: parseInt($('cad-estoque').value),
