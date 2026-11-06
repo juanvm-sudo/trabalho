@@ -28,6 +28,8 @@ Quem já tinha usuários salvos com CPF não perde nada: o nome de usuário é g
 
 Caixa · Estoque · Novo Produto · Usuários · Relatórios · WhatsApp · Jogo 2D
 
+Os botões *PDF* de Estoque e Relatórios baixam o arquivo direto, sem abrir janela de impressão.
+
 O botão ☀️/🌙 no topo (e na tela de login) alterna entre modo claro e escuro (a escolha fica salva). A tela de Aparência foi removida.
 
 ## Scanner de código de barras

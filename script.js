@@ -61,7 +61,6 @@ let carrinho = [];
 let faturamentoTotal = parseFloat(localStorage.getItem('mercado_faturamento')) || 0;
 let totalVendasCount = parseInt(localStorage.getItem('mercado_vendas_count')) || 0;
 let registroVendasProdutos = lerJSON('mercado_registro_vendas', {});
-let departamentoAtual = 'todos';
 let sessaoAtiva = false;
 let estoquePagina = 1;
 const ESTOQUE_POR_PAGINA = 20;
@@ -382,70 +381,6 @@ function carregarPreferenciasEstetica() {
   const fonteSalva = localStorage.getItem('mercado_fonte') || 'normal';
   alterarTema(temaSalvo);
   alterarTamanhoFonte(fonteSalva);
-}
-
-// ---------------------------------------------------------------------
-//  FILTRAGEM POR SEÇÃO/DEPARTAMENTO
-// ---------------------------------------------------------------------
-function filtrarDepartamento(dept, btn) {
-  departamentoAtual = dept;
-  document.querySelectorAll('.dept-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-
-  const tag = $('tag-categoria-atual');
-  const titulo = $('titulo-secao-atual');
-  if (tag && titulo) {
-    if (dept === 'todos') {
-      tag.innerText = "Todos os Itens";
-      titulo.innerText = "Adicionar por Código";
-    } else {
-      tag.innerText = `Seção ${dept.charAt(0).toUpperCase() + dept.slice(1)}`;
-      titulo.innerText = `Produtos - ${dept.charAt(0).toUpperCase() + dept.slice(1)}`;
-    }
-  }
-
-  const busca = $('busca-rapida-prod');
-  renderizarListaCodigos(busca ? busca.value : '');
-}
-
-// TABELA DE CONSULTA DE CÓDIGOS (removida da tela do caixa; função mantida por compatibilidade)
-function renderizarListaCodigos(filtroNome = "") {
-  const tbody = $('lista-codigos-produtos');
-  if (!tbody) return;
-
-  let prodsFiltrados = produtos;
-
-  if (departamentoAtual !== 'todos') {
-    prodsFiltrados = prodsFiltrados.filter(p => p.categoria.toLowerCase() === departamentoAtual.toLowerCase());
-  }
-
-  if (filtroNome) {
-    const f = filtroNome.toLowerCase();
-    prodsFiltrados = prodsFiltrados.filter(p => p.nome.toLowerCase().includes(f) || p.codigo.includes(f));
-  }
-
-  if (prodsFiltrados.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Nenhum produto encontrado</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = prodsFiltrados.slice(0, 50).map(p => `
-    <tr class="clickable-row" data-codigo="${esc(p.codigo)}" onclick="preencherEPesquisar(this.dataset.codigo)" title="Clique para adicionar">
-      <td><span class="tag-codigo">${esc(p.codigo)}</span></td>
-      <td>${esc(p.nome)}${p.marca ? ' <small style="color:var(--muted)">· '+esc(p.marca)+'</small>' : ''}</td>
-      <td><small>${esc(p.categoria)}</small></td>
-      <td class="text-right">R$ ${p.preco.toFixed(2)}</td>
-    </tr>
-  `).join('');
-}
-
-function filtrarTabelaConsulta(val) {
-  renderizarListaCodigos(val);
-}
-
-function preencherEPesquisar(codigo) {
-  const r = adicionarPorCodigo(codigo);
-  if (!r.ok) mostrarToast(r.mensagem, 'erro');
 }
 
 // ---------------------------------------------------------------------
@@ -791,49 +726,42 @@ function exportarRelatorioCSV() {
   mostrarToast(`Exportados ${lista.length} produtos.`, 'ok');
 }
 
-function baixarHTMLComoArquivo(html, nomeArquivo) {
-  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = nomeArquivo;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(a.href);
-}
-
 function exportarRelatorioPDF() {
-  const lista = produtos.map(p => {
+  const busca = ($('busca-relatorio')?.value || '').trim().toLowerCase();
+  const cat = $('filtro-cat-rel')?.value || '';
+  const comVendas = $('filtro-com-vendas')?.value || '';
+  let lista = produtos.map(p => {
     const qtdVend = registroVendasProdutos[p.nome] || 0;
     return { ...p, qtdVendida: qtdVend, receita: qtdVend * p.preco };
-  }).sort((a,b) => b.qtdVendida - a.qtdVendida).slice(0, 80);
-  const data = new Date().toLocaleString('pt-BR');
-  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Relatório — Mercadinho Express</title>
-    <style>body{font-family:system-ui,sans-serif;padding:24px;color:#111;max-width:1100px;margin:0 auto}
-    table{width:100%;border-collapse:collapse;font-size:12px} th,td{border:1px solid #ccc;padding:6px 8px;text-align:left}
-    th{background:#143109;color:#fff} h1{font-size:20px;margin:0 0 4px}
-    .meta{color:#555;margin-bottom:16px} .cards{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap}
-    .card{border:1px solid #ddd;padding:12px 16px;border-radius:8px;min-width:140px}
-    .card b{display:block;font-size:1.25rem;margin-top:4px}
-    @media print{body{padding:0} .no-print{display:none}}</style></head><body>
-    <h1>Mercadinho Express — Relatório de Produtos</h1>
-    <p class="meta">Gerado em ${data}</p>
-    <div class="cards">
-      <div class="card">Faturamento<br><b>R$ ${faturamentoTotal.toFixed(2)}</b></div>
-      <div class="card">Vendas<br><b>${totalVendasCount}</b></div>
-      <div class="card">Produtos<br><b>${produtos.length}</b></div>
-    </div>
-    <table><thead><tr><th>Cód.</th><th>Produto</th><th>Marca</th><th>Cat.</th><th>Preço</th><th>Est.</th><th>Vend.</th><th>Receita</th><th>Status</th></tr></thead>
-    <tbody>${lista.map(p => {
-      const st = statusProduto(p).txt;
-      return `<tr><td>${esc(p.codigo)}</td><td>${esc(p.nome)}</td><td>${esc(p.marca||'—')}</td><td>${esc(p.categoria)}</td>
-      <td>R$ ${p.preco.toFixed(2)}</td><td>${p.estoque}</td><td>${p.qtdVendida}</td><td>R$ ${p.receita.toFixed(2)}</td><td>${esc(st)}</td></tr>`;
-    }).join('')}</tbody></table>
-    <p class="meta no-print" style="margin-top:20px">Abra este arquivo no navegador e use Imprimir → Salvar como PDF se precisar do formato PDF.</p>
-    </body></html>`;
-  const nome = `relatorio_mercadinho_${new Date().toISOString().slice(0,10)}.html`;
-  baixarHTMLComoArquivo(html, nome);
-  mostrarToast('Relatório baixado. Abra o arquivo e salve como PDF se quiser.', 'ok');
+  });
+  if (busca) lista = lista.filter(p => `${p.nome} ${p.codigo} ${p.marca||''} ${p.categoria}`.toLowerCase().includes(busca));
+  if (cat) lista = lista.filter(p => p.categoria === cat);
+  if (comVendas === 'sim') lista = lista.filter(p => p.qtdVendida > 0);
+  if (comVendas === 'nao') lista = lista.filter(p => p.qtdVendida === 0);
+  lista.sort((a, b) => b.qtdVendida - a.qtdVendida || a.nome.localeCompare(b.nome));
+
+  baixarPDFTabela({
+    arquivo: `relatorio_mercadinho_${new Date().toISOString().slice(0,10)}.pdf`,
+    titulo: 'Mercadinho Express — Relatório de Produtos',
+    subtitulo: `Gerado em ${new Date().toLocaleString('pt-BR')} · ${lista.length} produtos`,
+    cards: [
+      { rotulo: 'Faturamento', valor: `R$ ${faturamentoTotal.toFixed(2)}` },
+      { rotulo: 'Vendas', valor: String(totalVendasCount) },
+      { rotulo: 'Produtos cadastrados', valor: String(produtos.length) }
+    ],
+    colunas: [
+      { titulo: 'Cód.', peso: 8 }, { titulo: 'Produto', peso: 24 }, { titulo: 'Marca', peso: 13 },
+      { titulo: 'Cat.', peso: 10 }, { titulo: 'Preço', peso: 8, alinhar: 'right' },
+      { titulo: 'Est.', peso: 6, alinhar: 'center' }, { titulo: 'Validade', peso: 9 },
+      { titulo: 'Vend.', peso: 6, alinhar: 'center' }, { titulo: 'Receita', peso: 9, alinhar: 'right' },
+      { titulo: 'Status', peso: 8, alinhar: 'center' }
+    ],
+    linhas: lista.map(p => [
+      p.codigo, p.nome, p.marca || '—', p.categoria, `R$ ${p.preco.toFixed(2)}`, String(p.estoque),
+      formatarData(p.validade), String(p.qtdVendida), `R$ ${p.receita.toFixed(2)}`, statusProduto(p).txt
+    ])
+  });
+  mostrarToast(`PDF do relatório baixado (${lista.length} produtos).`, 'ok');
 }
 
 function enviarWhatsAppReal() {
@@ -958,26 +886,22 @@ function exportarEstoqueCSV() {
 
 function exportarEstoquePDF() {
   const lista = filtrarListaEstoque();
-  const data = new Date().toLocaleString('pt-BR');
-  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Estoque — Mercadinho Express</title>
-    <style>body{font-family:system-ui,sans-serif;padding:24px;color:#111;max-width:1100px;margin:0 auto}
-    table{width:100%;border-collapse:collapse;font-size:12px} th,td{border:1px solid #ccc;padding:6px 8px;text-align:left}
-    th{background:#143109;color:#fff} h1{font-size:20px;margin:0 0 4px}
-    .meta{color:#555;margin-bottom:16px}
-    @media print{body{padding:0} .no-print{display:none}}</style></head><body>
-    <h1>Mercadinho Express — Estoque</h1>
-    <p class="meta">Gerado em ${data} · ${lista.length} produtos</p>
-    <table><thead><tr><th>Cód.</th><th>Produto</th><th>Marca</th><th>Cat.</th><th>Qtd</th><th>Preço</th><th>Validade</th><th>Status</th></tr></thead>
-    <tbody>${lista.map(p => {
-      const st = statusProduto(p).txt;
-      return `<tr><td>${esc(p.codigo)}</td><td>${esc(p.nome)}</td><td>${esc(p.marca||'—')}</td><td>${esc(p.categoria)}</td>
-      <td>${p.estoque}</td><td>R$ ${p.preco.toFixed(2)}</td><td>${formatarData(p.validade)}</td><td>${esc(st)}</td></tr>`;
-    }).join('')}</tbody></table>
-    <p class="meta no-print" style="margin-top:20px">Abra este arquivo no navegador e use Imprimir → Salvar como PDF se precisar do formato PDF.</p>
-    </body></html>`;
-  const nome = `estoque_mercadinho_${new Date().toISOString().slice(0,10)}.html`;
-  baixarHTMLComoArquivo(html, nome);
-  mostrarToast(`Estoque baixado (${lista.length} produtos). Abra o arquivo e salve como PDF se quiser.`, 'ok');
+  baixarPDFTabela({
+    arquivo: `estoque_mercadinho_${new Date().toISOString().slice(0,10)}.pdf`,
+    titulo: 'Mercadinho Express — Estoque',
+    subtitulo: `Gerado em ${new Date().toLocaleString('pt-BR')} · ${lista.length} produtos`,
+    colunas: [
+      { titulo: 'Cód.', peso: 9 }, { titulo: 'Produto', peso: 28 }, { titulo: 'Marca', peso: 15 },
+      { titulo: 'Cat.', peso: 11 }, { titulo: 'Qtd', peso: 6, alinhar: 'center' },
+      { titulo: 'Preço', peso: 9, alinhar: 'right' }, { titulo: 'Validade', peso: 11 },
+      { titulo: 'Status', peso: 9, alinhar: 'center' }
+    ],
+    linhas: lista.map(p => [
+      p.codigo, p.nome, p.marca || '—', p.categoria, String(p.estoque),
+      `R$ ${p.preco.toFixed(2)}`, formatarData(p.validade), statusProduto(p).txt
+    ])
+  });
+  mostrarToast(`PDF do estoque baixado (${lista.length} produtos).`, 'ok');
 }
 
 function gerarPromocaoRelampago() {
@@ -1032,7 +956,6 @@ function adicionarNovoProduto(e) {
 }
 
 function renderizarTudo() {
-  renderizarListaCodigos($('busca-rapida-prod') ? $('busca-rapida-prod').value : '');
   renderizarEstoque();
   renderizarCarrinho();
   atualizarMetricas();
@@ -1494,3 +1417,180 @@ function fecharAgradecimento() {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') { fecharAgradecimento(); fecharModal(); }
 });
+
+// =====================================================================
+//  GERADOR DE PDF (sem bibliotecas, funciona sem internet)
+//  baixarPDFTabela() monta o arquivo e já dispara o download.
+// =====================================================================
+const LARGURAS_HELVETICA = [
+  278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,
+  556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,
+  1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,
+  667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,
+  333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,
+  556,556,333,500,278,556,500,722,500,500,500,334,260,334,584
+];
+
+function larguraTextoPDF(txt, tam, negrito) {
+  let w = 0;
+  for (const ch of String(txt).normalize('NFC')) {
+    if (ch === '—' || ch === '–' || ch === '…') { w += 1000; continue; }
+    const base = ch.normalize('NFD').charAt(0);
+    const c = base.charCodeAt(0);
+    w += (c >= 32 && c <= 126) ? LARGURAS_HELVETICA[c - 32] : 556;
+  }
+  return (w / 1000) * tam * (negrito ? 1.07 : 1);
+}
+
+function ajustarTextoPDF(txt, larg, tam, negrito) {
+  const t0 = String(txt ?? '');
+  if (larguraTextoPDF(t0, tam, negrito) <= larg) return t0;
+  let t = t0;
+  while (t.length > 0 && larguraTextoPDF(t + '…', tam, negrito) > larg) t = t.slice(0, -1);
+  return t.trimEnd() + '…';
+}
+
+// Converte o texto para a codificação WinAnsi do PDF (acentos do português funcionam)
+function textoParaPDF(txt) {
+  const especiais = { '—': 0x97, '–': 0x96, '…': 0x85, '•': 0x95, '“': 0x93, '”': 0x94, '‘': 0x91, '’': 0x92, '€': 0x80 };
+  let saida = '';
+  for (const ch of String(txt ?? '').normalize('NFC')) {
+    const c = ch.codePointAt(0);
+    if (especiais[ch]) saida += String.fromCharCode(especiais[ch]);
+    else if ((c >= 32 && c <= 126) || (c >= 160 && c <= 255)) saida += ch;
+    else saida += '?';
+  }
+  return saida.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+}
+
+function montarPDFTabela({ titulo, subtitulo, cards = [], colunas, linhas }) {
+  const LARG = 841.89, ALT = 595.28, M = 36;            // A4 paisagem
+  const ALT_LINHA = 17, ALT_CAB = 20, TAM = 8, PAD = 5;
+  const VERDE = [20, 49, 9], CINZA = [90, 100, 92], PRETO = [0, 0, 0], BRANCO = [255, 255, 255];
+  const ZEBRA = [243, 246, 243], BORDA = [216, 222, 216];
+  const COR_STATUS = {
+    'OK': [20, 49, 9], 'Baixo': [150, 100, 0], 'Vencendo': [150, 100, 0],
+    'Vencido': [190, 50, 35], 'Esgotado': [190, 50, 35]
+  };
+
+  const util = LARG - 2 * M;
+  const somaPesos = colunas.reduce((s, c) => s + c.peso, 0);
+  let xAtual = M;
+  const cols = colunas.map(c => { const w = util * c.peso / somaPesos; const o = { ...c, x: xAtual, w }; xAtual += w; return o; });
+
+  const cor = (c) => c.map(v => (v / 255).toFixed(3)).join(' ');
+  const n = (v) => v.toFixed(2);
+  const paginas = [];
+  let ops, y;                                            // y = distância do topo da página
+
+  function texto(str, x, yTopo, tam, negrito, c) {
+    ops.push(`BT /${negrito ? 'F2' : 'F1'} ${tam} Tf ${cor(c)} rg ${n(x)} ${n(ALT - yTopo)} Td (${textoParaPDF(str)}) Tj ET`);
+  }
+  function caixa(x, yTopo, w, h, preenchimento, borda) {
+    if (preenchimento) ops.push(`${cor(preenchimento)} rg ${n(x)} ${n(ALT - yTopo - h)} ${n(w)} ${n(h)} re f`);
+    if (borda) ops.push(`${cor(borda)} RG 0.7 w ${n(x)} ${n(ALT - yTopo - h)} ${n(w)} ${n(h)} re S`);
+  }
+  function cabecalhoTabela() {
+    caixa(M, y, util, ALT_CAB, VERDE);
+    cols.forEach(c => {
+      const t = ajustarTextoPDF(c.titulo, c.w - 2 * PAD, TAM, true);
+      texto(t, posX(c, t, true), y + ALT_CAB / 2 + TAM * 0.35, TAM, true, BRANCO);
+    });
+    y += ALT_CAB;
+  }
+  function posX(c, t, negrito) {
+    const w = larguraTextoPDF(t, TAM, negrito);
+    if (c.alinhar === 'right') return c.x + c.w - PAD - w;
+    if (c.alinhar === 'center') return c.x + (c.w - w) / 2;
+    return c.x + PAD;
+  }
+  function novaPagina(primeira) {
+    ops = []; paginas.push(ops); y = M;
+    if (primeira) {
+      texto(titulo, M, y + 16, 16, true, VERDE);
+      texto(subtitulo || '', M, y + 31, 9, false, CINZA);
+      y += 44;
+      if (cards.length) {
+        const larg = Math.min(190, (util - 12 * (cards.length - 1)) / cards.length);
+        cards.forEach((cd, i) => {
+          const x = M + i * (larg + 12);
+          caixa(x, y, larg, 40, null, BORDA);
+          texto(cd.rotulo, x + 10, y + 15, 8, false, CINZA);
+          texto(cd.valor, x + 10, y + 32, 14, true, PRETO);
+        });
+        y += 40 + 14;
+      }
+    } else {
+      texto(titulo, M, y + 9, 9, true, CINZA);
+      y += 20;
+    }
+    cabecalhoTabela();
+  }
+
+  novaPagina(true);
+  const limite = ALT - M - 16;
+  if (!linhas.length) {
+    texto('Nenhum produto encontrado.', M + PAD, y + ALT_LINHA / 2 + 3, TAM + 1, false, CINZA);
+  }
+  linhas.forEach((linha, i) => {
+    if (y + ALT_LINHA > limite) novaPagina(false);
+    if (i % 2 === 1) caixa(M, y, util, ALT_LINHA, ZEBRA);
+    cols.forEach((c, k) => {
+      const t = ajustarTextoPDF(linha[k], c.w - 2 * PAD, TAM, false);
+      const ehStatus = c.titulo === 'Status' && COR_STATUS[t];
+      texto(t, posX(c, t, false), y + ALT_LINHA / 2 + TAM * 0.35, TAM, !!ehStatus, ehStatus ? COR_STATUS[t] : PRETO);
+    });
+    y += ALT_LINHA;
+  });
+
+  // rodapé com numeração
+  paginas.forEach((p, i) => {
+    ops = p;
+    const rod = `Página ${i + 1} de ${paginas.length}`;
+    texto('Mercadinho Express', M, ALT - M + 18, 8, false, CINZA);
+    texto(rod, LARG - M - larguraTextoPDF(rod, 8, false), ALT - M + 18, 8, false, CINZA);
+  });
+
+  // monta o arquivo
+  const objs = [];
+  objs[1] = '<< /Type /Catalog /Pages 2 0 R >>';
+  objs[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+  objs[4] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
+  const kids = [];
+  paginas.forEach((p, i) => {
+    const idPag = 5 + 2 * i, idCont = 6 + 2 * i;
+    kids.push(`${idPag} 0 R`);
+    const fluxo = p.join('\n');
+    objs[idPag] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${LARG} ${ALT}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${idCont} 0 R >>`;
+    objs[idCont] = `<< /Length ${fluxo.length} >>\nstream\n${fluxo}\nendstream`;
+  });
+  objs[2] = `<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${paginas.length} >>`;
+
+  let pdf = '%PDF-1.4\n%\xE2\xE3\xCF\xD3\n';
+  const offsets = [];
+  for (let i = 1; i < objs.length; i++) {
+    offsets[i] = pdf.length;
+    pdf += `${i} 0 obj\n${objs[i]}\nendobj\n`;
+  }
+  const xref = pdf.length;
+  pdf += `xref\n0 ${objs.length}\n0000000000 65535 f \n`;
+  for (let i = 1; i < objs.length; i++) pdf += String(offsets[i]).padStart(10, '0') + ' 00000 n \n';
+  pdf += `trailer\n<< /Size ${objs.length} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+
+  const bytes = new Uint8Array(pdf.length);
+  for (let i = 0; i < pdf.length; i++) bytes[i] = pdf.charCodeAt(i) & 255;
+  return bytes;
+}
+
+function baixarPDFTabela(opcoes) {
+  const bytes = montarPDFTabela(opcoes);
+  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = opcoes.arquivo || 'documento.pdf';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}

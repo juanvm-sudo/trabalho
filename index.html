@@ -62,8 +62,6 @@
   <!-- CONTEÚDO PRINCIPAL -->
   <div id="app-container" style="display:none;">
 
-    <div class="awning-wrap awning-thin"><div class="awning"></div></div>
-
     <!-- CABEÇALHO -->
     <header class="app-header">
       <div class="brand">
@@ -98,11 +96,10 @@
 
       <main class="main-pdv-container">
 
-        <!-- COLUNA ESQUERDA: SCANNER, CÓDIGO E CONSULTA -->
+        <!-- COLUNA ESQUERDA: DIGITAR O CÓDIGO -->
         <section class="pdv-section search-section">
           <div class="section-header">
-            <h2 id="titulo-secao-atual">Adicionar por Código</h2>
-            <span class="badge-tag" id="tag-categoria-atual">Todos os Itens</span>
+            <h2>Adicionar produto</h2>
           </div>
 
           <!-- SCANNER POR WEBCAM -->
@@ -126,30 +123,11 @@
           <form class="code-search-box" onsubmit="adicionarPorCodigoForm(event)">
             <label for="input-codigo">Ou digite o código do produto:</label>
             <div class="input-group">
-              <input type="text" id="input-codigo" placeholder="Ex: 1001" autofocus required>
+              <input type="text" id="input-codigo" placeholder="Ex: 1001" autocomplete="off" autofocus required>
               <button type="submit" class="btn btn-accent">Adicionar</button>
             </div>
+            <small class="hint">Digite o código e aperte Enter para colocar na venda.</small>
           </form>
-
-          <div class="quick-reference-box">
-            <div class="quick-ref-header">
-              <h3>Lista de Produtos e Códigos</h3>
-              <input type="text" id="busca-rapida-prod" placeholder="Filtrar nome..." onkeyup="filtrarTabelaConsulta(this.value)">
-            </div>
-            <div class="table-wrapper mini-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Cód.</th>
-                    <th>Nome do Produto</th>
-                    <th>Dep.</th>
-                    <th class="text-right">Preço</th>
-                  </tr>
-                </thead>
-                <tbody id="lista-codigos-produtos"></tbody>
-              </table>
-            </div>
-          </div>
         </section>
 
         <!-- COLUNA DIREITA: CARRINHO E CHECKOUT -->
