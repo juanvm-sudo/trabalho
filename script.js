@@ -394,21 +394,24 @@ function filtrarDepartamento(dept, btn) {
 
   const tag = $('tag-categoria-atual');
   const titulo = $('titulo-secao-atual');
-
-  if (dept === 'todos') {
-    tag.innerText = "Todos os Itens";
-    titulo.innerText = "Adicionar por Código";
-  } else {
-    tag.innerText = `Seção ${dept.charAt(0).toUpperCase() + dept.slice(1)}`;
-    titulo.innerText = `Produtos - ${dept.charAt(0).toUpperCase() + dept.slice(1)}`;
+  if (tag && titulo) {
+    if (dept === 'todos') {
+      tag.innerText = "Todos os Itens";
+      titulo.innerText = "Adicionar por Código";
+    } else {
+      tag.innerText = `Seção ${dept.charAt(0).toUpperCase() + dept.slice(1)}`;
+      titulo.innerText = `Produtos - ${dept.charAt(0).toUpperCase() + dept.slice(1)}`;
+    }
   }
 
-  renderizarListaCodigos($('busca-rapida-prod').value);
+  const busca = $('busca-rapida-prod');
+  renderizarListaCodigos(busca ? busca.value : '');
 }
 
-// TABELA DE CONSULTA DE CÓDIGOS
+// TABELA DE CONSULTA DE CÓDIGOS (removida da tela do caixa; função mantida por compatibilidade)
 function renderizarListaCodigos(filtroNome = "") {
   const tbody = $('lista-codigos-produtos');
+  if (!tbody) return;
 
   let prodsFiltrados = produtos;
 
@@ -788,21 +791,33 @@ function exportarRelatorioCSV() {
   mostrarToast(`Exportados ${lista.length} produtos.`, 'ok');
 }
 
+function baixarHTMLComoArquivo(html, nomeArquivo) {
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = nomeArquivo;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+}
+
 function exportarRelatorioPDF() {
   const lista = produtos.map(p => {
     const qtdVend = registroVendasProdutos[p.nome] || 0;
     return { ...p, qtdVendida: qtdVend, receita: qtdVend * p.preco };
   }).sort((a,b) => b.qtdVendida - a.qtdVendida).slice(0, 80);
-  const win = window.open('', '_blank');
-  win.document.write(`<!DOCTYPE html><html><head><title>Relatório — Mercadinho Express</title>
-    <style>body{font-family:system-ui;padding:20px;color:#000} table{width:100%;border-collapse:collapse;font-size:11px}
-    th,td{border:1px solid #ccc;padding:5px 6px} th{background:#143109;color:#fff}
-    h1{font-size:18px;margin:0 0 4px} .meta{color:#555;margin-bottom:12px}
-    .cards{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
-    .card{border:1px solid #ddd;padding:10px 14px;border-radius:8px;min-width:140px}
-    .card b{display:block;font-size:1.2rem}</style></head><body>
+  const data = new Date().toLocaleString('pt-BR');
+  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Relatório — Mercadinho Express</title>
+    <style>body{font-family:system-ui,sans-serif;padding:24px;color:#111;max-width:1100px;margin:0 auto}
+    table{width:100%;border-collapse:collapse;font-size:12px} th,td{border:1px solid #ccc;padding:6px 8px;text-align:left}
+    th{background:#143109;color:#fff} h1{font-size:20px;margin:0 0 4px}
+    .meta{color:#555;margin-bottom:16px} .cards{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+    .card{border:1px solid #ddd;padding:12px 16px;border-radius:8px;min-width:140px}
+    .card b{display:block;font-size:1.25rem;margin-top:4px}
+    @media print{body{padding:0} .no-print{display:none}}</style></head><body>
     <h1>Mercadinho Express — Relatório de Produtos</h1>
-    <p class="meta">Gerado em ${new Date().toLocaleString('pt-BR')}</p>
+    <p class="meta">Gerado em ${data}</p>
     <div class="cards">
       <div class="card">Faturamento<br><b>R$ ${faturamentoTotal.toFixed(2)}</b></div>
       <div class="card">Vendas<br><b>${totalVendasCount}</b></div>
@@ -811,11 +826,14 @@ function exportarRelatorioPDF() {
     <table><thead><tr><th>Cód.</th><th>Produto</th><th>Marca</th><th>Cat.</th><th>Preço</th><th>Est.</th><th>Vend.</th><th>Receita</th><th>Status</th></tr></thead>
     <tbody>${lista.map(p => {
       const st = statusProduto(p).txt;
-      return `<tr><td>${p.codigo}</td><td>${p.nome}</td><td>${p.marca||'—'}</td><td>${p.categoria}</td>
-      <td>R$ ${p.preco.toFixed(2)}</td><td>${p.estoque}</td><td>${p.qtdVendida}</td><td>R$ ${p.receita.toFixed(2)}</td><td>${st}</td></tr>`;
+      return `<tr><td>${esc(p.codigo)}</td><td>${esc(p.nome)}</td><td>${esc(p.marca||'—')}</td><td>${esc(p.categoria)}</td>
+      <td>R$ ${p.preco.toFixed(2)}</td><td>${p.estoque}</td><td>${p.qtdVendida}</td><td>R$ ${p.receita.toFixed(2)}</td><td>${esc(st)}</td></tr>`;
     }).join('')}</tbody></table>
-    <script>window.onload=()=>{window.print();}</script></body></html>`);
-  win.document.close();
+    <p class="meta no-print" style="margin-top:20px">Abra este arquivo no navegador e use Imprimir → Salvar como PDF se precisar do formato PDF.</p>
+    </body></html>`;
+  const nome = `relatorio_mercadinho_${new Date().toISOString().slice(0,10)}.html`;
+  baixarHTMLComoArquivo(html, nome);
+  mostrarToast('Relatório baixado. Abra o arquivo e salve como PDF se quiser.', 'ok');
 }
 
 function enviarWhatsAppReal() {
@@ -939,23 +957,27 @@ function exportarEstoqueCSV() {
 }
 
 function exportarEstoquePDF() {
-  // Abre janela de impressão com a tabela filtrada (usuário pode salvar como PDF)
   const lista = filtrarListaEstoque();
-  const win = window.open('', '_blank');
-  win.document.write(`<!DOCTYPE html><html><head><title>Estoque — Mercadinho Express</title>
-    <style>body{font-family:system-ui;padding:20px;color:#000} table{width:100%;border-collapse:collapse;font-size:12px}
-    th,td{border:1px solid #ccc;padding:6px 8px;text-align:left} th{background:#143109;color:#fff}
-    h1{font-size:18px;margin:0 0 4px} .meta{color:#555;margin-bottom:16px}</style></head><body>
+  const data = new Date().toLocaleString('pt-BR');
+  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Estoque — Mercadinho Express</title>
+    <style>body{font-family:system-ui,sans-serif;padding:24px;color:#111;max-width:1100px;margin:0 auto}
+    table{width:100%;border-collapse:collapse;font-size:12px} th,td{border:1px solid #ccc;padding:6px 8px;text-align:left}
+    th{background:#143109;color:#fff} h1{font-size:20px;margin:0 0 4px}
+    .meta{color:#555;margin-bottom:16px}
+    @media print{body{padding:0} .no-print{display:none}}</style></head><body>
     <h1>Mercadinho Express — Estoque</h1>
-    <p class="meta">Gerado em ${new Date().toLocaleString('pt-BR')} · ${lista.length} produtos</p>
+    <p class="meta">Gerado em ${data} · ${lista.length} produtos</p>
     <table><thead><tr><th>Cód.</th><th>Produto</th><th>Marca</th><th>Cat.</th><th>Qtd</th><th>Preço</th><th>Validade</th><th>Status</th></tr></thead>
     <tbody>${lista.map(p => {
       const st = statusProduto(p).txt;
-      return `<tr><td>${p.codigo}</td><td>${p.nome}</td><td>${p.marca||'—'}</td><td>${p.categoria}</td>
-      <td>${p.estoque}</td><td>R$ ${p.preco.toFixed(2)}</td><td>${formatarData(p.validade)}</td><td>${st}</td></tr>`;
+      return `<tr><td>${esc(p.codigo)}</td><td>${esc(p.nome)}</td><td>${esc(p.marca||'—')}</td><td>${esc(p.categoria)}</td>
+      <td>${p.estoque}</td><td>R$ ${p.preco.toFixed(2)}</td><td>${formatarData(p.validade)}</td><td>${esc(st)}</td></tr>`;
     }).join('')}</tbody></table>
-    <script>window.onload=()=>{window.print();}</script></body></html>`);
-  win.document.close();
+    <p class="meta no-print" style="margin-top:20px">Abra este arquivo no navegador e use Imprimir → Salvar como PDF se precisar do formato PDF.</p>
+    </body></html>`;
+  const nome = `estoque_mercadinho_${new Date().toISOString().slice(0,10)}.html`;
+  baixarHTMLComoArquivo(html, nome);
+  mostrarToast(`Estoque baixado (${lista.length} produtos). Abra o arquivo e salve como PDF se quiser.`, 'ok');
 }
 
 function gerarPromocaoRelampago() {
